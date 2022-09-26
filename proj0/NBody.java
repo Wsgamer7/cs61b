@@ -22,7 +22,6 @@ public class NBody {
             Planet thisPlanet = new Planet(xxPos, yyPos, xxVel, yyVel, mass, img);
             planets[i] = thisPlanet;
         }
-        System.out.println(planets[0].xxPos);
         return planets;
     }
     public static void main(String[] args){
