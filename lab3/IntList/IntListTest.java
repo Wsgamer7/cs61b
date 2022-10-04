@@ -1,5 +1,7 @@
 import static org.junit.Assert.*;
 
+import IntList.IntList;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class IntListTest {
@@ -10,6 +12,15 @@ public class IntListTest {
      * assertEquals knows how to handle IntLists just fine.
      */
 
+    @Test(timeout = 1000)
+    public void testReverse(){
+        IntList A = IntList.of(1,2,3,4);
+        IntList expected = IntList.of(4, 3, 2, 1);
+        IntList B = IntList.reverse(A);
+        assertEquals(expected, B);
+        assertNotEquals(A, B);
+        assertEquals(null, IntList.reverse(null));
+    }
     @Test
     public void testList() {
         IntList one = new IntList(1, null);
