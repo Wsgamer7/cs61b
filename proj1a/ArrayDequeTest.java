@@ -4,11 +4,18 @@ public class ArrayDequeTest {
     @Test
     public void testGet() {
         ArrayDeque<Integer> orgin1 = new ArrayDeque<>();
-        orgin1.addLast(1);
+        orgin1.addFirst(0);
+        orgin1.addFirst(1);
         orgin1.addLast(2);
-        int expected1 = 2;
-        int actual = orgin1.get(1);
-        assertEquals(expected1, actual);
+        orgin1.addFirst(3);
+        orgin1.removeFirst();
+        orgin1.removeFirst();
+        orgin1.addFirst(6);
+        orgin1.get(0);
+        orgin1.removeFirst();
+        orgin1.removeLast();
+        orgin1.removeLast();
+        orgin1.addFirst(11);
     }
 
 }

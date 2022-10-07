@@ -75,10 +75,12 @@ public class ArrayDeque<T> {
             return null;
         }
         T shouldReturn = lst[front];
-        front = plusOne(front);
+        if (size != 1){
+            front = plusOne(front);
+        }
         size -= 1;
-        if (useage() < 0.25) {
-            resizing(2 * size);
+        if (useage() < 0.25 && lst.length >= 16) {
+            resizing(Math.max(2 * size, 8));
         }
         return shouldReturn;
     }
@@ -87,10 +89,12 @@ public class ArrayDeque<T> {
             return null;
         }
         T shouldReturn = lst[last];
-        last = minusOne(last);
+        if (size != 1) {
+            last = minusOne(last);
+        }
         size -= 1;
-        if (useage() < 0.25) {
-            resizing(2 * size);
+        if (useage() < 0.25 && lst.length >= 16) {
+            resizing(Math.max(2 * size, 8));
         }
         return shouldReturn;
     }
