@@ -75,7 +75,7 @@ public class ArrayDeque<T> {
             return null;
         }
         T shouldReturn = lst[front];
-        if (size != 1){
+        if (size != 1) {
             front = plusOne(front);
         }
         size -= 1;
