@@ -36,16 +36,24 @@ public class ArrayDeque<T> {
         if (lst.length - size < 1) {
             resizing(2 * size);
         }
-        front = minusOne(front);
-        lst[front] = x;
+        if (isEmpty()) {
+            lst[front] = x;
+        } else {
+            front = minusOne(front);
+            lst[front] = x;
+        }
         size += 1;
     }
     public void addLast(T x) {
         if (lst.length - size < 1) {
             resizing(2 * size);
         }
-        last = plusOne(last);
-        lst[last] = x;
+        if (isEmpty()) {
+            lst[front] = x;
+        } else {
+            last = plusOne(last);
+            lst[last] = x;
+        }
         size += 1;
     }
     public boolean isEmpty() {
@@ -86,7 +94,7 @@ public class ArrayDeque<T> {
         }
         return shouldReturn;
     }
-    public T  get(int index) {
+    public T get(int index) {
         if (index > size - 1) {
             return null;
         }
