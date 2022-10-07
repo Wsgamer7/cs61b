@@ -1,30 +1,30 @@
 public class ArrayDeque<T> {
-    public int size;
-    public int front;
-    public int last;
-    public T[] lst;
+    private int size;
+    private int front;
+    private int last;
+    private T[] lst;
     public ArrayDeque() {
         lst = (T[]) new Object[8];
         size = 0;
         front = 0;
         last = 0;
     }
-    public float useage() {
-        return (float)size/lst.length;
+    private float useage() {
+        return (float) size / lst.length;
     }
-    public int minusOne(int index) {
+    private int minusOne(int index) {
         index = index - 1;
         if (index < 0) {
             index += lst.length;
         }
         return index;
     }
-    public int plusOne(int index) {
+    private int plusOne(int index) {
         return (index + 1) % lst.length;
     }
-    public void resizing (int n) {
+    private void resizing(int n) {
         T[] newLst = (T[]) new Object[n];
-        for(int i = 0; i< size; i += 1) {
+        for (int i = 0; i < size; i += 1) {
             newLst[i] = lst[front];
             front = plusOne(front);
         }
@@ -33,7 +33,7 @@ public class ArrayDeque<T> {
         last = size - 1;
     }
     public void addFirst(T x) {
-        if(lst.length - size < 1) {
+        if (lst.length - size < 1) {
             resizing(2 * size);
         }
         front = minusOne(front);
@@ -41,7 +41,7 @@ public class ArrayDeque<T> {
         size += 1;
     }
     public void addLast(T x) {
-        if(lst.length - size < 1) {
+        if (lst.length - size < 1) {
             resizing(2 * size);
         }
         last = plusOne(last);
@@ -54,7 +54,7 @@ public class ArrayDeque<T> {
     public int size() {
         return size;
     }
-    public void printDeque(){
+    public void printDeque() {
         for (int i = front; i != last; i = plusOne(i)) {
             System.out.print(i);
             System.out.print(" ");
@@ -69,8 +69,8 @@ public class ArrayDeque<T> {
         T shouldReturn = lst[front];
         front = plusOne(front);
         size -= 1;
-        if (useage() < 0.25){
-            resizing(2* size);
+        if (useage() < 0.25) {
+            resizing(2 * size);
         }
         return shouldReturn;
     }
@@ -81,17 +81,17 @@ public class ArrayDeque<T> {
         T shouldReturn = lst[last];
         last = minusOne(last);
         size -= 1;
-        if (useage() < 0.25){
-            resizing(2* size);
+        if (useage() < 0.25) {
+            resizing(2 * size);
         }
         return shouldReturn;
     }
     public T  get(int index) {
-        if (index > size -1) {
+        if (index > size - 1) {
             return null;
         }
         int p = front;
-        for(int i = 0; i< index; i += 1) {
+        for (int i = 0; i < index; i += 1) {
             p = plusOne(p);
         }
         return lst[p];
