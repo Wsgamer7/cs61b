@@ -4,27 +4,28 @@ ArrayDeque:
 
 Q: Give an example of at least one idea from the staff solution that would have made your solution better (if any).
 
-A: 
+A: Use a method resizing that takes a int number and replace lst by T[number] to contain grow and shrink both, then written grow and shrink. It is flex more.
 
 Q: What's something you felt proud of in your code, if anything?
 
-A:
+A: I have a flex resizing method and use readable statements/abstraction, for examples, the method isEmpty. I am solving a problem
+as a unit.
 
 Q: What's something that was particularly inelegant in your code, if anything?
 
-A:
+A:I have not comment for any method. I have not compared the advantages of not storing item in last pointer (I have gotten touch of it ever).
 
 Q: What did you learn by talking to your partner about writing ArrayDeque?
 
-A:
+A:Compare the advantages of not storing item in last pointer, comment for every method.
 
 Q: What do you wish you would have known before writing ArrayDeque, if anything?
 
-A:
+A:advantages of not storing in last pointer, grow and shrink, quick comment;
 
 Q: If you wrote ArrayDeque again, what would you do differently, if anything?
 
-A:
+A:I will write comments for all methods, more higher abstraction.
 
 -----
 
