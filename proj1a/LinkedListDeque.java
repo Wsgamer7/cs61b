@@ -14,35 +14,25 @@ public class LinkedListDeque<T> {
     private int size;
     public LinkedListDeque() {
         sentinal = new IntNode(null, null, null);
+        sentinal.next = sentinal;
+        sentinal.pre = sentinal;
         size = 0;
     }
     public boolean isEmpty() {
         return size == 0;
     }
     public void addFirst(T x) {
-        if (isEmpty()) {
-            IntNode newNode = new IntNode(sentinal, x, sentinal);
-            sentinal.next = newNode;
-            sentinal.pre = newNode;
-        } else {
-            IntNode p = sentinal.next;
-            IntNode newNode = new IntNode(sentinal, x, p);
-            p.pre = newNode;
-            sentinal.next = newNode;
-        }
+        IntNode p = sentinal.next;
+        IntNode newNode = new IntNode(sentinal, x, p);
+        p.pre = newNode;
+        sentinal.next = newNode;
         size += 1;
     }
     public void addLast(T x) {
-        if (isEmpty()) {
-            IntNode newNode = new IntNode(sentinal, x, sentinal);
-            sentinal.next = newNode;
-            sentinal.pre = newNode;
-        } else {
-            IntNode p = sentinal.pre;
-            IntNode newNode = new IntNode(p, x, sentinal);
-            p.next = newNode;
-            sentinal.pre = newNode;
-        }
+        IntNode p = sentinal.pre;
+        IntNode newNode = new IntNode(p, x, sentinal);
+        p.next = newNode;
+        sentinal.pre = newNode;
         size += 1;
     }
     public int size() {
@@ -60,9 +50,8 @@ public class LinkedListDeque<T> {
         if (isEmpty()) {
             return null;
         }
-        IntNode p1 = sentinal.next;
-        T shouldReturn = p1.item;
-        p1 = p1.next;
+        IntNode p1 = sentinal.next.next;
+        T shouldReturn = sentinal.next.item;
         sentinal.next = p1;
         p1.pre = sentinal;
         size -= 1;
@@ -72,9 +61,8 @@ public class LinkedListDeque<T> {
         if (isEmpty()) {
             return null;
         }
-        IntNode p1 = sentinal.pre;
-        T shouldReturn = p1.item;
-        p1 = p1.pre;
+        IntNode p1 = sentinal.pre.pre;
+        T shouldReturn = sentinal.pre.item;
         p1.next = sentinal;
         sentinal.pre = p1;
         size -= 1;

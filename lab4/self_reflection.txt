@@ -37,19 +37,19 @@ A:
 
 Q: What's something you felt proud of in your code, if anything?
 
-A:
+A:finish that without error.
 
 Q: What's something that was particularly inelegant in your code, if anything?
 
-A:
+A:Method remove use too much variable. The init sentinel Node is not circle, which raise a special case.
 
 Q: What did you learn by talking to your partner about writing LinkedListDeque?
 
-A:
+A:less variable. Invariant structure to prevent special case
 
 Q: What do you wish you would have known before writing LinkedListDeque, if anything?
 
-A:
+A:Init sentinel should be circle. less row.
 
 Q: If you wrote LinkedListDeque again, what would you do differently, if anything?
 
@@ -61,4 +61,4 @@ Meta:
 
 Q: Did you like this design review process? Anything we should do differently next time?
 
-A: 
+A: It is nice.
