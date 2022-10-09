@@ -19,6 +19,5 @@ public class PalindromeFinder {
                 maxNPalindrome[1] = countNPalindrome;
             }
         }
-        System.out.printf("max N is %d : numbers of NPalindrome is %d", maxNPalindrome[0], maxNPalindrome[1]);
     }
 }

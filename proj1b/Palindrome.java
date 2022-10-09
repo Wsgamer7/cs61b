@@ -20,8 +20,8 @@ public class Palindrome {
         Deque<Character> dq = wordToDeque(word);
         if (word.length() > 1) {
             while (dq.size() > 1) {
-                boolean CharsPassComparator = cc.equalChars(dq.removeFirst(), dq.removeLast());
-                if (!CharsPassComparator) {
+                boolean charsPassComparator = cc.equalChars(dq.removeFirst(), dq.removeLast());
+                if (!charsPassComparator) {
                     return false;
                 }
             }
