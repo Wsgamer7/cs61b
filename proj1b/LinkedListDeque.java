@@ -1,101 +1,127 @@
+/**  first part of project1A.
+ *   Deque implemented by Linked List
+ *  @author FlyingPig
+ */
 public class LinkedListDeque<T> implements Deque<T> {
-    private class IntNode {
-        private IntNode pre;
+    /** inner class Node. */
+    public class Node {
+        /** the item stored on this node. */
         private T item;
-        private IntNode next;
+        /** the Node before this Node. **/
+        private Node pre;
+        /** the Node after this Node. **/
+        private Node next;
 
-        public IntNode(IntNode preNode, T x, IntNode nextNode) {
-            pre = preNode;
-            item = x;
-            next = nextNode;
+        /** constructor for Node. */
+        public Node(T n, Node ppre, Node nnext) {
+            item = n;
+            pre = ppre;
+            next = nnext;
+        }
+
+        /** constructor for Node.(especially for sentinel node). */
+        public Node(Node ppre, Node nnext) {
+            pre = ppre;
+            next = nnext;
         }
     }
-    private IntNode sentinal;
+
+    /** sentinel node. */
+    private Node sentinel;
+    /** size of the deque. */
     private int size;
+
+    /** constructor for deque. */
     public LinkedListDeque() {
-        sentinal = new IntNode(null, null, null);
-        sentinal.next = sentinal;
-        sentinal.pre = sentinal;
+        sentinel = new Node(null, null);
+        sentinel.pre = sentinel;
+        sentinel.next = sentinel;
         size = 0;
     }
+
     @Override
     public boolean isEmpty() {
         return size == 0;
     }
-    @Override
-    public void addFirst(T x) {
-        IntNode p = sentinal.next;
-        IntNode newNode = new IntNode(sentinal, x, p);
-        p.pre = newNode;
-        sentinal.next = newNode;
-        size += 1;
-    }
-    @Override
-    public void addLast(T x) {
-        IntNode p = sentinal.pre;
-        IntNode newNode = new IntNode(p, x, sentinal);
-        p.next = newNode;
-        sentinal.pre = newNode;
-        size += 1;
-    }
+
     @Override
     public int size() {
         return size;
     }
+
     @Override
-    public void printDeque() {
-        IntNode current = sentinal.next;
-        while (current != sentinal) {
-            System.out.print(current.item);
-            System.out.print(" ");
-            current = current.next;
-        }
+    public void addFirst(T item) {
+        Node newList = new Node(item, sentinel, sentinel.next);
+        sentinel.next.pre = newList;
+        sentinel.next = newList;
+        size++;
     }
+
+    @Override
+    public void addLast(T item) {
+        Node newList = new Node(item, sentinel.pre, sentinel);
+        sentinel.pre.next = newList;
+        sentinel.pre = newList;
+        size++;
+    }
+
     @Override
     public T removeFirst() {
-        if (isEmpty()) {
+        if (size == 0) {
             return null;
         }
-        IntNode p1 = sentinal.next.next;
-        T shouldReturn = sentinal.next.item;
-        sentinal.next = p1;
-        p1.pre = sentinal;
-        size -= 1;
-        return shouldReturn;
+        T ret = sentinel.next.item;
+        sentinel.next.next.pre = sentinel;
+        sentinel.next = sentinel.next.next;
+        size--;
+        return ret;
     }
+
     @Override
     public T removeLast() {
-        if (isEmpty()) {
+        if (size == 0) {
             return null;
         }
-        IntNode p1 = sentinal.pre.pre;
-        T shouldReturn = sentinal.pre.item;
-        p1.next = sentinal;
-        sentinal.pre = p1;
-        size -= 1;
-        return shouldReturn;
+        T ret = sentinel.pre.item;
+        sentinel.pre.pre.next = sentinel;
+        sentinel.pre = sentinel.pre.pre;
+        size--;
+        return ret;
     }
+
     @Override
     public T get(int index) {
-        if (index > size - 1) {
+        if (index >= size) {
             return null;
         }
-        IntNode current = sentinal.next;
-        for (int i = 0; i < index; i++) {
-            current = current.next;
+        Node ptr = sentinel;
+        for (int i = 0; i <= index; i++) {
+            ptr = ptr.next;
         }
-        return current.item;
+        return ptr.item;
     }
-    public T getRecursive(int index) {
-        if (index > size - 1) {
-            return null;
-        }
-        return getRecursiveHelper(sentinal.next, index);
-    }
-    private T getRecursiveHelper(IntNode start, int index) {
+
+    private T getRecursiveHelp(Node start, int index) {
         if (index == 0) {
             return start.item;
+        } else {
+            return getRecursiveHelp(start.next, index - 1);
         }
-        return getRecursiveHelper(start.next, index - 1);
+    }
+
+    public T getRecursive(int index) {
+        if (index >= size) {
+            return null;
+        }
+        return getRecursiveHelp(sentinel.next, index);
+    }
+
+    @Override
+    public void printDeque() {
+        Node ptr = sentinel.next;
+        while (ptr != sentinel) {
+            System.out.print(ptr.item + " ");
+            ptr = ptr.next;
+        }
     }
 }

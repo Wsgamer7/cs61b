@@ -1,32 +1,41 @@
 public class Palindrome {
-    public static Deque<Character> wordToDeque(String word) {
-        Deque<Character> newDeque = new LinkedListDeque<>();
-        for (int i = 0; i < word.length(); i++) {
-            newDeque.addLast(word.charAt(i));
+    /** convert a word to dq. */
+    public Deque<Character> wordToDeque(String word) {
+        Deque<Character> dq = new ArrayDeque<>();
+        int len = word.length();
+        for (int i = 0; i < len; i++) {
+            dq.addLast(word.charAt(i));
         }
-        return newDeque;
+        return dq;
     }
-    /*return ture if a word is palindrome */
-    public static boolean isPalindrome(String word) {
-        Deque<Character> dq = wordToDeque(word);
-        String reservedWord = "";
-        for (int i = 0; i < word.length(); i++) {
-            reservedWord += dq.removeLast();
+
+    /** decide if the given word is palindrome. */
+    public boolean isPalindrome(String word) {
+        if (word == null || word.length() <= 1) {
+            return true;
         }
-        return word.equals(reservedWord);
-    }
-    /* return true if a word is generalized palindrome on CharacterComparator cc */
-    public static boolean isPalindrome(String word, CharacterComparator cc) {
-        Deque<Character> dq = wordToDeque(word);
-        if (word.length() > 1) {
-            while (dq.size() > 1) {
-                boolean charsPassComparator = cc.equalChars(dq.removeFirst(), dq.removeLast());
-                if (!charsPassComparator) {
-                    return false;
-                }
+        int len = word.length();
+        for (int i = 0; i < len / 2; i++) {
+            if (word.charAt(i) != word.charAt(len - i - 1)) {
+                return false;
             }
         }
         return true;
     }
 
+    /** overloaded isPalindrome, decide if the given word is palindrome.
+     * according to the given CharacterComparator
+     */
+    public boolean isPalindrome(String word, CharacterComparator cc) {
+        if (word == null || word.length() <= 1) {
+            return true;
+        }
+        int len = word.length();
+        for (int i = 0; i < len / 2; i++) {
+            if (!cc.equalChars(word.charAt(i), word.charAt(len - i - 1))) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
