@@ -9,34 +9,34 @@ public class TestArrayDequeGold {
             String log = "";
             StudentArrayDeque<Integer> stdAD = new StudentArrayDeque<Integer>();
             ArrayDequeSolution<Integer> solAD = new ArrayDequeSolution<Integer>();
+            int actual = 0;
+            int expected = 0;
             for (int j = 0; j < maxCallTimes; j += 1) {
                 int indexCalled = StdRandom.uniform(4);
                 if (solAD.isEmpty()) {
                     indexCalled = StdRandom.uniform(2);
                 }
-                int actual = 0;
-                int expected = 0;
                 switch (indexCalled) {
-                    case 0 -> {
+                    case 0:
                         log = log + "addFirst(" + j + ")\n";
                         stdAD.addFirst(j);
                         solAD.addFirst(j);
-                    }
-                    case 1 -> {
+                        break;
+                    case 1:
                         log = log + "addLast(" + j + ")\n";
                         stdAD.addLast(j);
                         solAD.addLast(j);
-                    }
-                    case 2 -> {
+                        break;
+                    case 2:
                         log = log + "removeFirst()\n";
                         actual = stdAD.removeFirst();
                         expected = solAD.removeFirst();
-                    }
-                    case 3 -> {
+                        break;
+                    case 3:
                         log = log + "removeLast()\n";
                         actual = stdAD.removeLast();
                         expected = solAD.removeLast();
-                    }
+                        break;
                 }
                 if (actual != expected) {
                     assertEquals(log, actual, expected);
