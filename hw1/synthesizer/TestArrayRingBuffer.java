@@ -14,7 +14,7 @@ public class TestArrayRingBuffer {
     public void someTest() {
         //ArrayRingBuffer arb = new ArrayRingBuffer(10);
         BoundedQueue<Integer> queue1 = new ArrayRingBuffer<>(8);
-        for(int i = 0; i < 8; i++) {
+        for (int i = 0; i < 8; i++) {
             queue1.enqueue(i);
         }
         queue1.dequeue();
