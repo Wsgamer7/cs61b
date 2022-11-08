@@ -1,6 +1,5 @@
 // TODO: Make sure to make this class a part of the synthesizer package
- package synthesizer;
-import javax.swing.text.html.HTMLDocument;
+package synthesizer;
 import java.util.Iterator;
 
 //TODO: Make sure to make this class and all of its methods public
@@ -37,13 +36,6 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
     private int addInRing(int x) {
         return (x + 1) % capacity;
     }
-    private int minusInRing(int x) {
-        int toReturn = x - 1;
-        if (toReturn < 0) {
-            toReturn += capacity;
-        }
-        return toReturn;
-    }
     @Override
     public void enqueue(T x) {
         // TODO: Enqueue the item. Don't forget to increase fillCount and update last.
@@ -78,17 +70,20 @@ public class ArrayRingBuffer<T> extends AbstractBoundedQueue<T> {
     @Override
     public T peek() {
         // TODO: Return the first item. None of your instance variables should change.
+        if (isEmpty()) {
+            throw new RuntimeException("Ring Buffer Underflow");
+        }
         return rb[first];
     }
 
     // TODO: When you get to part 5, implement the needed code to support iteration.
     @Override
     public Iterator<T> iterator() {
-        return new gIterator();
+        return new GIterator();
     }
-    private class gIterator implements Iterator<T> {
+    private class GIterator implements Iterator<T> {
         private int ptr;
-        private gIterator() {
+        private GIterator() {
             ptr = 0;
         }
         public boolean hasNext() {
