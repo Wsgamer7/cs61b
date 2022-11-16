@@ -6,7 +6,7 @@ import byog.TileEngine.Tileset;
 import java.util.Random;
 
 public class Hexagon {
-    private static final int seed = 666;
+    private static final int seed = 1900;
     private static final Random RANDOM = new Random(seed);
     /* get a random tile */
     private static TETile randomTile() {
@@ -35,6 +35,9 @@ public class Hexagon {
         int xStart = startPoint[0];
         int yStart = startPoint[1];
         for (int i = 0; i < numbers; i++) {
+            if (tile.description().equals("mountain")) {
+                tile = TETile.colorVariant(tile, 30, 30, 30, RANDOM);
+            }
             world[xStart][yStart + indentation + i] = tile;
         }
     }
