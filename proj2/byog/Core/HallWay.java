@@ -20,8 +20,8 @@ class HallWay {
         diffY = Room.sgn(pTwo.yPosition - pOne.yPosition);
     }
     void drawRowColum() {
-        Position pA= pOne.moveTo(- diffY, 0);
-        Position pB = new Position(pTwo.xPosition + diffX, pOne.yPosition + diffY, worldGenerator);
+        Position pA= pOne.moveTo(0, - diffY);
+        Position pB = new Position(pTwo.xPosition + diffX, pOne.yPosition +  diffY, worldGenerator);
         Position pC= pB.moveTo(0, -diffY);
         Position pD = pTwo.moveTo(- diffX, 0);
         Room roomAB = new Room(pA, pB, wall, floor);

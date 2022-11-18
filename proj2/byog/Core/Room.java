@@ -7,6 +7,7 @@ class Room {
     final Position startPoint;
     final Position endPoint;
     final WorldGenerator worldGenerator;
+    final int[][] isFloorMatrix;
     private final TETile floor;
     private final TETile wall;
     private final int diffX;
@@ -14,6 +15,7 @@ class Room {
     /* constructor*/
     Room(Position startPoint, Position endPoint, TETile wall, TETile floor) {
         this.worldGenerator = startPoint.worldGenerator;
+        this.isFloorMatrix = worldGenerator.isFloorMatrix;
         this.startPoint = startPoint;
         this.endPoint = endPoint;
         this.weight = endPoint.xPosition - startPoint.xPosition;
@@ -45,12 +47,28 @@ class Room {
     private void drawInside() {
         Position startOfNewRow = startPoint.moveTo(diffX, diffY);
         while (startOfNewRow.yPosition != endPoint.yPosition) {
-            startOfNewRow.drawAColum(weight - 2 * diffX, floor);
+            startOfNewRow.drawARow(weight - 2 * diffX, floor);
+            for(int i = 0; i != weight - diffX; i += diffX) {
+                int xPosition = startOfNewRow.xPosition;
+                int yPosition = startOfNewRow.yPosition;
+                isFloorMatrix[xPosition + i][yPosition] = 1;
+            }
             startOfNewRow = startOfNewRow.moveTo(0, diffY);
         }
     }
     void drawRoom() {
         drawWall();
         drawInside();
+    }
+    /* get a Position in room by two integers */
+    private int getANumInTwoInts(int num1, int num2, double ratio) {
+        return (int) Math.round(num1 * ratio + num2 * (1 - ratio));
+    }
+    Position getAPosition(int xRandom, int yRandom) {
+        double xRatio = (double) xRandom / 9;
+        double yRatio = (double) yRandom / 9;
+        int newXPosition = getANumInTwoInts(startPoint.xPosition, endPoint.xPosition, xRatio);
+        int newYPosition = getANumInTwoInts(startPoint.yPosition, endPoint.yPosition, yRatio);
+        return new Position(newXPosition, newYPosition, worldGenerator);
     }
 }

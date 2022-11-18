@@ -34,7 +34,6 @@ class Position {
     void drawThisPoint(TETile tile) {
         if (isFloorMatrix[xPosition][yPosition] == 0) {
             world[xPosition][yPosition] = tile;
-            isFloorMatrix[xPosition][yPosition] = 1;
         }
     }
     /* draw a row with length + 1 in a world, this position is the start Point, if length > 0
