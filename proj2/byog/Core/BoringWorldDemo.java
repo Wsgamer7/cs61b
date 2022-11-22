@@ -27,20 +27,8 @@ public class BoringWorldDemo {
         }
         TETile floor = Tileset.FLOOR;
         TETile wall = Tileset.WALL;
-        Position aPoint = new Position(10, 10);
-        Position bPoint = new Position(15, 15);
-        Position cPoint = new Position(20, 20);
-        Position dPoint = new Position(25, 15);
-        HallWay hw = new HallWay(aPoint, bPoint, wall, floor);
-        HallWay hw2 = new HallWay(cPoint, dPoint, wall, floor);
-        hw.drawRowColum(world);
-        hw2.drawRowColum(world);
-//        Room room = new Room(bPoint, 9, 3, wall, floor);
-//        long seed = 262891;
-//        WordGenerator wordGenerator = new WordGenerator(world, seed);
-//        Room room = new Room(30,20,8,9, floor, wall);
-//        wordGenerator.drawARoom(room);
-//        // draws the world to the screen
+        long seed = 210919;
+        WorldGenerator worldGenerator = new WorldGenerator(world, seed);
         ter.renderFrame(world);
     }
 
