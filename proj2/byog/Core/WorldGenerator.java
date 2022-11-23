@@ -22,21 +22,17 @@ public class WorldGenerator {
         typeMatrix = new int[weightOfW][heightOfW];
     }
     void toGenerator() {
-        Position testOrigin = new Position(10,10, this);
-        Room testRoom= new Room(testOrigin, 2, 2);
-        Position testOrigin1 = testOrigin.moveTo(9, 9);
-        Room testRoom1 = new Room(testOrigin1, 5, 2);
+        Position testOrigin = new Position(10,20, this);
+        Room testRoom= new Room(testOrigin, 3, 3);
+        Position testOrigin1 = testOrigin.moveTo(9, - 9);
+        Room testRoom1 = new Room(testOrigin1, 5, 5);
         Position testOrigin2 = testOrigin.moveTo(- 9, - 9);
-        Room testRoom2 = new Room(testOrigin2, 2, 2);
+        Room testRoom2 = new Room(testOrigin2, 5, 5);
         testRoom.drawRoom();
         testRoom1.drawRoom();
         testRoom2.drawRoom();
-        Hallway hw1 = getHWFromTwoRooms(testRoom1, testRoom);
-        Hallway hw2 = getHWFromTwoRooms(testRoom, testRoom2);
-//        Hallway hw3 = getHWFromTwoRooms(testRoom1, testRoom2);
-        hw1.drawLHW();
-        hw2.drawLHW();
-//        hw3.drawLHW();
+        drawHWFromTwoRooms(testRoom, testRoom2);
+        drawHWFromTwoRooms(testRoom, testRoom1);
         transToWorld();
     }
     /* trans integer in typeMatrix to TETile in world*/
@@ -68,5 +64,10 @@ public class WorldGenerator {
         Position pos1 = getAPosInRoom(room1);
         Position pos2 = getAPosInRoom(room2);
         return new Hallway(pos1, pos2);
+    }
+    void drawHWFromTwoRooms(Room room1, Room room2) {
+        Hallway hw = getHWFromTwoRooms(room1, room2);
+        int wayOfDrawing = RANDOM.nextInt(2);
+        hw.drawHW(wayOfDrawing);
     }
 }
