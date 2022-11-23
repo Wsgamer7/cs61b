@@ -20,15 +20,14 @@ public class BoringWorldDemo {
 
         // initialize tiles
         TETile[][] world = new TETile[WIDTH][HEIGHT];
-        for (int x = 0; x < WIDTH; x += 1) {
-            for (int y = 0; y < HEIGHT; y += 1) {
-                world[x][y] = Tileset.NOTHING;
-            }
-        }
-        TETile floor = Tileset.FLOOR;
-        TETile wall = Tileset.WALL;
-        long seed = 210919;
-        WorldGenerator worldGenerator = new WorldGenerator(world, seed);
+//        for (int x = 0; x < WIDTH; x += 1) {
+//            for (int y = 0; y < HEIGHT; y += 1) {
+//                world[x][y] = Tileset.NOTHING;
+//            }
+//        }
+        long seed = 1213225;
+        WorldGenerator worldGenerator = new WorldGenerator(seed, world);
+        worldGenerator.toGenerator();
         ter.renderFrame(world);
     }
 
