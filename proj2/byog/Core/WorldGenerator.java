@@ -12,6 +12,8 @@ public class WorldGenerator {
     int heightOfW;
     int numberOfRoom;
     ArrayList<Room> allRooms;
+    Position door;
+    int openedDoor = 0;
     int minLengthOfRoom = 3;
     int maxLengthOfRoom = 9;
     int[][] typeMatrix;
@@ -30,6 +32,7 @@ public class WorldGenerator {
         ArrayList<Room> allRoomsCopy = new ArrayList<>(allRooms);
         drawListOfRooms(allRoomsCopy);
         drawAllHallWall(allRoomsCopy);
+        getDoorAndDraw();
         transToWorld();
     }
     /* trans integer in typeMatrix to TETile in world*/
@@ -105,6 +108,36 @@ public class WorldGenerator {
         int diffX = RANDOM.nextInt(1, room.weight);
         int diffY = RANDOM.nextInt(1, room.height);
         return room.origin.moveTo(diffX, diffY);
+    }
+    Position getAPosOnWallOfRoom(Room room) {
+        Position randomP = getAPosInRoom(room);
+        Position toReturn;
+        int toWard = RANDOM.nextInt(4);
+        if (toWard == 0) {
+            toReturn = new Position(randomP.xPos, room.origin.yPos, this); // Down
+        }else if (toWard == 1) {
+            toReturn = new Position(room.fasterP.xPos, randomP.yPos, this); // Right
+        }else if (toWard == 2) {
+            toReturn = new Position(randomP.xPos, room.fasterP.yPos, this); // Up
+        }else {
+            toReturn = new Position(room.origin.xPos, randomP.yPos, this); //Left
+        }
+        if (typeMatrix[toReturn.xPos][toReturn.yPos] != 1) {
+            return getAPosOnWallOfRoom(room);
+        }
+        return toReturn;
+    }
+    void getDoorAndDraw() {
+        int indexOfRandomRoom = RANDOM.nextInt(allRooms.size());
+        Room randomRoom = allRooms.get(indexOfRandomRoom);
+        door = getAPosOnWallOfRoom(randomRoom);
+        drawTheDoor();
+    }
+    void drawTheDoor() {
+        typeMatrix[door.xPos][door.yPos] = 3 + openedDoor;
+    }
+    void openTheDoor() {
+        openedDoor = 1;
     }
     Hallway getHWFromTwoRooms(Room room1, Room room2) {
         Position pos1 = getAPosInRoom(room1);
