@@ -1,5 +1,7 @@
 package byog.Core;
 
+import java.util.ArrayList;
+
 public class Room {
     int[][] typeMatrix;
     Position origin;
@@ -17,6 +19,22 @@ public class Room {
     /* return true if this room in the world*/
     boolean inWorld(){
         return origin.inWorld() && fasterP.inWorld();
+    }
+    /* return the distance bettwen this and room */
+    int distanceWith(Room room) {
+        int distanceX = Math.abs(origin.xPos - room.origin.xPos);
+        int distanceY = Math.abs(origin.yPos - room.origin.yPos);
+        return distanceX + distanceY;
+    }
+    /* find the most closed room in the arrayList */
+    Room closedRoomIn(ArrayList<Room> roomArrayList) {
+        Room mostClosedRoom = roomArrayList.get(0);
+        for (Room room : roomArrayList) {
+            if (this.distanceWith(mostClosedRoom) > this.distanceWith(room)) {
+                mostClosedRoom = room;
+            }
+        }
+        return mostClosedRoom;
     }
     /* return ture if this room overlap room1*/
     boolean overLap(Room room1){

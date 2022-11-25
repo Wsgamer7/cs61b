@@ -10,8 +10,8 @@ import java.util.Random;
  *  Draws a world that is mostly empty except for a small region.
  */
 public class BoringWorldDemo {
-    private static final int WIDTH = 60;
-    private static final int HEIGHT = 40;
+    private static final int WIDTH = 100;
+    private static final int HEIGHT = 60;
 
     public static void main(String[] args) {
         // initialize the tile rendering engine with a window of size WIDTH x HEIGHT
@@ -25,7 +25,7 @@ public class BoringWorldDemo {
 //                world[x][y] = Tileset.NOTHING;
 //            }
 //        }
-        long seed =8123;
+        long seed =822;
         WorldGenerator worldGenerator = new WorldGenerator(seed, world);
         worldGenerator.toGenerator();
         ter.renderFrame(world);

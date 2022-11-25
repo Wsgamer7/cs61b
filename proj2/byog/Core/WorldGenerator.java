@@ -1,7 +1,7 @@
 package byog.Core;
 
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.*;
+
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 
@@ -10,6 +10,8 @@ public class WorldGenerator {
     TETile[][] world;
     int weightOfW;
     int heightOfW;
+    int numberOfRoom;
+    ArrayList<Room> allRooms;
     int minLengthOfRoom = 3;
     int maxLengthOfRoom = 9;
     int[][] typeMatrix;
@@ -20,21 +22,14 @@ public class WorldGenerator {
         weightOfW = world.length;
         heightOfW = world[0].length;
         typeMatrix = new int[weightOfW][heightOfW];
+        double numberOfRoomDouble = ((double) weightOfW * heightOfW) / (60 * 40) * 24;
+        numberOfRoom = (int) Math.floor(numberOfRoomDouble);
     }
     void toGenerator() {
-//        Position testOrigin = new Position(10,20, this);
-//        Room testRoom= new Room(testOrigin, 3, 3);
-//        Position testOrigin1 = testOrigin.moveTo(0, - 9);
-//        Room testRoom1 = new Room(testOrigin1, 5, 5);
-//        Position testOrigin2 = testOrigin.moveTo(- 9,  9);
-//        Room testRoom2 = new Room(testOrigin2, 5, 5);
-//        testRoom.drawRoom();
-//        testRoom1.drawRoom();
-//        testRoom2.drawRoom();
-//        drawHWFromTwoRooms(testRoom, testRoom2);
-//        drawHWFromTwoRooms(testRoom, testRoom1);
-        ArrayList<Room> allRooms = getAllRoomsRandomly(24);
-        drawListOfRooms(allRooms);
+        getAllRoomsRandomly(numberOfRoom);
+        ArrayList<Room> allRoomsCopy = new ArrayList<>(allRooms);
+        drawListOfRooms(allRoomsCopy);
+        drawAllHallWall(allRoomsCopy);
         transToWorld();
     }
     /* trans integer in typeMatrix to TETile in world*/
@@ -56,16 +51,34 @@ public class WorldGenerator {
         int heightOfRoom = RANDOM.nextInt(minLengthOfRoom, maxLengthOfRoom);
         return new Room(origin, weightOfRoom, heightOfRoom);
     }
-    ArrayList<Room> getAllRoomsRandomly(int number) {
-        ArrayList<Room> allRooms = new ArrayList<>();
+    void getAllRoomsRandomly(int number) {
+        ArrayList<Room> allRooms1 = new ArrayList<>();
         while (number > 0) {
+            int countOfFailContinue = 0;
             Room roomAdded = getARandomRoom();
-            if (checkThNewRoom(allRooms, roomAdded)) {
-                allRooms.add(roomAdded);
+            if (checkThNewRoom(allRooms1, roomAdded)) {
+                allRooms1.add(roomAdded);
                 number -= 1;
+                countOfFailContinue = 0;
+            }else {
+                countOfFailContinue += 1;
+                if (countOfFailContinue > 20) {
+                    break;
+                }
             }
         }
-        return allRooms;
+        this.allRooms = allRooms1;
+    }
+    /* drawAllHallWaLL destructively, it describes room as unconnected or connected */
+    void drawAllHallWall(ArrayList<Room> unconnectedRooms) {
+        Room lastConnected = unconnectedRooms.get(0); //select a room as the start randomly
+        unconnectedRooms.remove(lastConnected);
+        while (unconnectedRooms.size() > 0) {
+            Room willConnect = lastConnected.closedRoomIn(unconnectedRooms);
+            drawHWFromTwoRooms(lastConnected, willConnect);
+            lastConnected = willConnect;
+            unconnectedRooms.remove(willConnect);
+        }
     }
     /* take a arraylistOfRooms and draw all room in it */
     void drawListOfRooms(ArrayList<Room> arrayListOfRoom) {
