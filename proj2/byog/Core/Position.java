@@ -56,9 +56,9 @@ public class Position {
         return withInY && withInX;
     }
     /* return true if this pos is contained in room*/
-    boolean isContain(Room room){
-        boolean containInX = this.xPos >= room.origin.xPos && this.xPos <= room.fasterP.xPos;
-        boolean containInY = this.yPos >= room.origin.yPos && this.yPos <= room.fasterP.yPos;
+    boolean isContained(Room room){
+        boolean containInX = this.xPos >= (room.origin.xPos - 3) && this.xPos <= (room.fasterP.xPos + 3);
+        boolean containInY = this.yPos >= (room.origin.yPos - 3) && this.yPos <= (room.fasterP.yPos + 3);
         return containInY && containInX;
     }
 }

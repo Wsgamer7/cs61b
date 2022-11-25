@@ -20,7 +20,7 @@ public class Room {
     }
     /* return ture if this room overlap room1*/
     boolean overLap(Room room1){
-        return origin.isContain(room1) && fasterP.isContain(room1);
+        return origin.isContained(room1) || fasterP.isContained(room1);
     }
     /* draw wall(1) for this room*/
     void drawWall(){

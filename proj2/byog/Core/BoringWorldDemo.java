@@ -25,7 +25,7 @@ public class BoringWorldDemo {
 //                world[x][y] = Tileset.NOTHING;
 //            }
 //        }
-        long seed =4114;
+        long seed =8123;
         WorldGenerator worldGenerator = new WorldGenerator(seed, world);
         worldGenerator.toGenerator();
         ter.renderFrame(world);
