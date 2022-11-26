@@ -10,7 +10,7 @@ import java.util.Random;
  *  Draws a world that is mostly empty except for a small region.
  */
 public class BoringWorldDemo {
-    private static final int WIDTH = 100;
+    private static final int WIDTH = 66;
     private static final int HEIGHT = 60;
 
     public static void main(String[] args) {
