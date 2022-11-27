@@ -2,6 +2,7 @@ package byog.Core;
 
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
+import edu.princeton.cs.algs4.StdDraw;
 
 import java.util.LinkedList;
 import java.util.Queue;
@@ -11,6 +12,8 @@ public class Game {
     /* Feel free to change the width and height. */
     public static final int WIDTH = 80;
     public static final int HEIGHT = 30;
+    public static final int widthOfMenu = 30;
+    public static final int heightOfMenu = 50;
     public long seed;
     public Queue<Character> action = new LinkedList<>();
 
@@ -18,6 +21,22 @@ public class Game {
      * Method used for playing a fresh game. The game should start from the main menu.
      */
     public void playWithKeyboard() {
+        Menu menu = new Menu(widthOfMenu, heightOfMenu);
+        menu.getGUI();
+        while (true) {
+            if (!StdDraw.hasNextKeyTyped()) {
+                continue;
+            }
+            char typed = StdDraw.nextKeyTyped();
+            if (typed == 'N' || typed == 'n') {
+                this.seed = menu.getSeed();
+                getWorldFormSeed();
+            }
+            if (typed == 'Q' || typed == 'q') {
+                break;
+            }
+        }
+        System.exit(0);
     }
 
     /**
@@ -37,6 +56,9 @@ public class Game {
         // and return a 2D tile representation of the world that would have been
         // drawn if the same inputs had been given to playWithKeyboard().
         getSeedAndActionFrom(input);
+        return getWorldFormSeed();
+    }
+    private TETile[][] getWorldFormSeed() {
         ter.initialize(WIDTH, HEIGHT);
         TETile[][] finalWorldFrame = new TETile[WIDTH][HEIGHT];
         WorldGenerator wG = new WorldGenerator(seed, finalWorldFrame);
