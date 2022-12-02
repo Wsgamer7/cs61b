@@ -66,4 +66,19 @@ public class Position {
         boolean containInY = this.yPos >= (room.origin.yPos - 3) && this.yPos <= (room.fasterP.yPos + 3);
         return containInY && containInX;
     }
+    String typeOfTile() {
+        try {
+            int type = typeMatrix[xPos][yPos];
+            String typeWithStr = wG.typeDescription.get(type);
+            boolean unOpened = wG.numOfOpenedDoor == 0;
+            boolean isKey = this.equals(wG.positionOfKey) && unOpened;
+            if (isKey) {
+                return "Key";
+            }else {
+                return typeWithStr;
+            }
+        } catch (RuntimeException e) {
+            return "";
+        }
+    }
 }

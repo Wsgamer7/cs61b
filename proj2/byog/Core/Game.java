@@ -6,16 +6,18 @@ import edu.princeton.cs.introcs.StdDraw;
 
 import java.awt.*;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 
 public class Game {
     private Player player;
     private int depth;
+    private String tileDescription;
     private final TERenderer ter = new TERenderer();
     private WorldGenerator wG;
     /* Feel free to change the width and height. */
     public static final int WIDTH = 80;
-    public static final int HEIGHT = 60;
+    public static final int HEIGHT = 80;
     public static final int downEmpty = 2;
     public static final int upEmpty = 5;
     public static final int leftEmpty = 5;
@@ -25,6 +27,7 @@ public class Game {
     private boolean inMenu = false;
     private final Font titleFont = new Font("Monaco", Font.BOLD, 40);
     private final Font smallFont = new Font("Monaco", Font.PLAIN, 20);
+    private final Font hUDFont = new Font("Monaco", Font.PLAIN, 16);
     public long seed;
     public Queue<Character> actionList = new LinkedList<>();
 
@@ -35,7 +38,7 @@ public class Game {
         getMenu();
         inMenu = true;
         depth = 0;
-        keyListener();
+        keyAndMouseListener();
     }
 
     /**
@@ -68,13 +71,28 @@ public class Game {
     }
     //top layer update###########################################
     void updateTheWorld() {
-        updateUHD();
         ter.renderFrame(wG.world);
+        updateHUD();
+        StdDraw.show();
     }
-    void keyListener() {
+    void keyAndMouseListener() {
         boolean isListening = true;
         while (isListening) {
+            //mouse
+            if (!inMenu) {
+                double xMouse = StdDraw.mouseX();
+                double yMouse = StdDraw.mouseY();
+                String capturedByMouse = getTypeFromXY(xMouse, yMouse);
+                if (capturedByMouse != null) {
+                    tileDescription = capturedByMouse;
+                }
+            }
+            //key
+            if (wG != null) {
+                updateTheWorld();
+            }
             if (!StdDraw.hasNextKeyTyped()) {
+                StdDraw.pause(20);
                 continue;
             }
             char input = StdDraw.nextKeyTyped();
@@ -107,18 +125,31 @@ public class Game {
                 if (toDeeper) {
                     getNextWorld();
                 }
-                updateTheWorld();
                 return true;
             }
         }
         return true;
     }
     //HUD
-    void updateUHD() {
-        Font UHDFont = new Font("Monaco", Font.PLAIN, 16);
+    private int[] transCoordinate(int x, int y) {
+        int[] toReturn = new int[2];
+        toReturn[0] = x - leftEmpty;
+        toReturn[1] = y - downEmpty;
+        return toReturn;
+    }
+    private String getTypeFromXY(double x, double y) {
+        int xInt = (int) Math.floor(x);
+        int yInt = (int) Math.floor(y);
+        int[] posFixed = transCoordinate(xInt, yInt);
+        Position nowPosition = new Position(posFixed[0], posFixed[1], wG);
+        return nowPosition.typeOfTile();
+    }
+    void updateHUD() {
         StdDraw.setPenColor(StdDraw.WHITE);
-        StdDraw.setFont(UHDFont);
-        StdDraw.textLeft(0, HEIGHT - 1, "Depth = " );
+        StdDraw.setFont(hUDFont);
+        //Depth
+        StdDraw.textLeft(0, HEIGHT - 1, "Depth = " + depth);
+        StdDraw.textRight(WIDTH - 1, HEIGHT - 1, tileDescription);
     }
     //Menu block##############################################################
     void getMenu() {
@@ -172,7 +203,8 @@ public class Game {
         seed += 1;
         ter.initialize(WIDTH, HEIGHT, leftEmpty, downEmpty);//inti for StDraw
         getWorldFormSeed();
-        updateTheWorld();
+        tileDescription = "";
+        ter.renderFrame(wG.world);
         inMenu = false;
     }
     private TETile[][] getWorldFormSeed() {

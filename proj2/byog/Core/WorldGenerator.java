@@ -22,6 +22,7 @@ public class WorldGenerator {
     int maxLengthOfRoom = 9;
     int[][] typeMatrix;
     TETile[] mapToTile = StyleSet.getAStyle("default");
+    Map<Integer, String> typeDescription = new HashMap<>();
     WorldGenerator(long seed, TETile[][] world, int xOffSet, int yOffSet) {
         RANDOM = new Random(seed);
         this.world = world;
@@ -32,6 +33,14 @@ public class WorldGenerator {
         typeMatrix = new int[weightOfW][heightOfW];
         double numberOfRoomDouble = ((double) weightOfW * heightOfW) / (60 * 40) * 24;
         numberOfRoom = (int) Math.floor(numberOfRoomDouble);
+        intiTypeDescription();
+    }
+    void intiTypeDescription() {
+        typeDescription.put(0, "Nothing");
+        typeDescription.put(1, "Wall");
+        typeDescription.put(2, "Floor");
+        typeDescription.put(3, "LockedDoor");
+        typeDescription.put(4, "UnlockedDoor");
     }
     void toGenerator() {
         getAllRoomsRandomly(numberOfRoom);
@@ -106,7 +115,7 @@ public class WorldGenerator {
                 countOfFailContinue = 0;
             }else {
                 countOfFailContinue += 1;
-                if (countOfFailContinue > 5) {
+                if (countOfFailContinue > 4) {
                     break;
                 }
             }
