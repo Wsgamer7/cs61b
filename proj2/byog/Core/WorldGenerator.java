@@ -8,19 +8,25 @@ import byog.TileEngine.Tileset;
 public class WorldGenerator {
     Random RANDOM;
     TETile[][] world;
+    Player player;
+    int xOffSet;
+    int yOffSet;
     int weightOfW;
     int heightOfW;
     int numberOfRoom;
     ArrayList<Room> allRooms;
-    Position door;
-    int openedDoor = 0;
+    Position positionOfDoor;
+    Position positionOfKey;
+    int numOfOpenedDoor;
     int minLengthOfRoom = 3;
     int maxLengthOfRoom = 9;
     int[][] typeMatrix;
-    TETile[] mapToTile = StyleSet.defaultStyle;
-    WorldGenerator(long seed, TETile[][] world){
+    TETile[] mapToTile = StyleSet.getAStyle("default");
+    WorldGenerator(long seed, TETile[][] world, int xOffSet, int yOffSet) {
         RANDOM = new Random(seed);
         this.world = world;
+        this.xOffSet = xOffSet;
+        this.yOffSet = yOffSet;
         weightOfW = world.length;
         heightOfW = world[0].length;
         typeMatrix = new int[weightOfW][heightOfW];
@@ -34,6 +40,21 @@ public class WorldGenerator {
         drawAllHallWall(allRoomsCopy);
         getDoorAndDraw();
         transToWorld();
+        intiKey();
+        intiPlayer();
+    }
+
+    void drawATile(TETile tile, Position position) {
+        int x = position.xPos;
+        int y = position.yPos;
+        world[x][y] = tile;
+    }
+    /* restore a tile after player move away */
+    void backAPoint(Position position) {
+        int x = position.xPos;
+        int y = position.yPos;
+        TETile DrawStored = mapToTile[typeMatrix[x][y]];
+        drawATile(DrawStored, position);
     }
     /* trans integer in typeMatrix to TETile in world*/
     void transToWorld(){
@@ -44,6 +65,26 @@ public class WorldGenerator {
                 world[i][j]= mapToTile[typeOfTile];
             }
         }
+    }
+    Room getARoomFromAllRoom() {
+        int randomIndex = RANDOM.nextInt(allRooms.size());
+        return allRooms.get(randomIndex);
+    }
+    Position getAPositionInALlRooms() {
+        Room randomRoom = getARoomFromAllRoom();
+        return getAPosInRoom(randomRoom);
+    }
+    private void intiKey() {
+        //set up the key
+        positionOfKey = getAPositionInALlRooms();
+        if (numOfOpenedDoor == 0) {
+            drawATile(Tileset.MOUNTAIN, positionOfKey);
+        }
+    }
+    private void intiPlayer() {
+        //set up the player
+        player = new Player(getAPositionInALlRooms());
+        player.drawPlayer();
     }
     /* get a Random room in the world */
     Room getARandomRoom() {
@@ -65,7 +106,7 @@ public class WorldGenerator {
                 countOfFailContinue = 0;
             }else {
                 countOfFailContinue += 1;
-                if (countOfFailContinue > 20) {
+                if (countOfFailContinue > 5) {
                     break;
                 }
             }
@@ -130,14 +171,17 @@ public class WorldGenerator {
     void getDoorAndDraw() {
         int indexOfRandomRoom = RANDOM.nextInt(allRooms.size());
         Room randomRoom = allRooms.get(indexOfRandomRoom);
-        door = getAPosOnWallOfRoom(randomRoom);
+        positionOfDoor = getAPosOnWallOfRoom(randomRoom);
+        numOfOpenedDoor = RANDOM.nextInt(2);
         drawTheDoor();
     }
     void drawTheDoor() {
-        typeMatrix[door.xPos][door.yPos] = 3 + openedDoor;
+        typeMatrix[positionOfDoor.xPos][positionOfDoor.yPos] = 3 + numOfOpenedDoor;
+        world[positionOfDoor.xPos][positionOfDoor.yPos] = mapToTile[3 + numOfOpenedDoor];
     }
     void openTheDoor() {
-        openedDoor = 1;
+        numOfOpenedDoor = 1;
+        drawTheDoor();
     }
     Hallway getHWFromTwoRooms(Room room1, Room room2) {
         Position pos1 = getAPosInRoom(room1);

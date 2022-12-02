@@ -17,6 +17,11 @@ public class Position {
         weightOfw = wG.weightOfW;
     }
     /* move to a new position by diffX and diffY */
+    boolean equals(Position position) {
+        boolean equalsInX = xPos == position.xPos;
+        boolean equalsInY = yPos == position.yPos;
+        return equalsInX && equalsInY;
+    }
     Position moveTo(int diffX, int diffY){
         int newXPos = xPos + diffX;
         int newYPos = yPos + diffY;

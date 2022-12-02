@@ -8,11 +8,6 @@ import static org.junit.Assert.*;
 public class TestGame {
     @Test
     public void testSeed() {
-        Game game = new Game();
-        Menu menu = new Menu(30, 50);
-        long seed = menu.getSeed();
-        long expect = 11;
-        assertEquals(expect, seed);
     }
     public static void main(String[] args) {
         StdDraw.setCanvasSize(500, 500);
