@@ -1,6 +1,7 @@
 package byog.Core;
+import java.io.*;
 
-public class Position {
+public class Position implements Serializable{
     WorldGenerator wG;
     int[][] typeMatrix;
     int weightOfw;
@@ -17,6 +18,11 @@ public class Position {
         weightOfw = wG.weightOfW;
     }
     /* move to a new position by diffX and diffY */
+    boolean equals(Position position) {
+        boolean equalsInX = xPos == position.xPos;
+        boolean equalsInY = yPos == position.yPos;
+        return equalsInX && equalsInY;
+    }
     Position moveTo(int diffX, int diffY){
         int newXPos = xPos + diffX;
         int newYPos = yPos + diffY;
@@ -60,5 +66,20 @@ public class Position {
         boolean containInX = this.xPos >= (room.origin.xPos - 3) && this.xPos <= (room.fasterP.xPos + 3);
         boolean containInY = this.yPos >= (room.origin.yPos - 3) && this.yPos <= (room.fasterP.yPos + 3);
         return containInY && containInX;
+    }
+    String typeOfTile() {
+        try {
+            int type = typeMatrix[xPos][yPos];
+            String typeWithStr = wG.typeDescription.get(type);
+            boolean unOpened = wG.numOfOpenedDoor == 0;
+            boolean isKey = this.equals(wG.positionOfKey) && unOpened;
+            if (isKey) {
+                return "Key";
+            }else {
+                return typeWithStr;
+            }
+        } catch (RuntimeException e) {
+            return "";
+        }
     }
 }

@@ -19,16 +19,16 @@ public class BoringWorldDemo {
         ter.initialize(WIDTH, HEIGHT);
 
         // initialize tiles
-        TETile[][] world = new TETile[WIDTH][HEIGHT];
+//        TETile[][] world = new TETile[WIDTH][HEIGHT];
 //        for (int x = 0; x < WIDTH; x += 1) {
 //            for (int y = 0; y < HEIGHT; y += 1) {
 //                world[x][y] = Tileset.NOTHING;
 //            }
 //        }
-        long seed =8242;
-        WorldGenerator worldGenerator = new WorldGenerator(seed, world);
-        worldGenerator.toGenerator();
-        ter.renderFrame(world);
+//        long seed =826554;
+//        WorldGenerator worldGenerator = new WorldGenerator(seed, world);
+//        worldGenerator.toGenerator();
+//        ter.renderFrame(world);
     }
 
 
