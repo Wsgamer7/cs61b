@@ -1,8 +1,9 @@
 package byog.Core;
+import java.io.*;
 
 import java.util.ArrayList;
 
-public class Room {
+public class Room implements Serializable{
     int[][] typeMatrix;
     Position origin;
     Position fasterP;

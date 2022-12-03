@@ -3,42 +3,49 @@ package byog.Core;
 import byog.TileEngine.TERenderer;
 import byog.TileEngine.TETile;
 import edu.princeton.cs.introcs.StdDraw;
+import java.io.*;
 
 import java.awt.*;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.Queue;
 
-public class Game {
+public class Game implements Serializable{
     private Player player;
-    private int depth;
+    private int depth;//s
     private String tileDescription;
     private final TERenderer ter = new TERenderer();
     private WorldGenerator wG;
     /* Feel free to change the width and height. */
-    public static final int WIDTH = 80;
-    public static final int HEIGHT = 80;
+    public static final int WIDTH = 50;
+    public static final int HEIGHT = 40;
     public static final int downEmpty = 2;
     public static final int upEmpty = 5;
     public static final int leftEmpty = 5;
     public static final int rightEmpty = 5;
     public static final int widthOfMenu = 30;
     public static final int heightOfMenu = 50;
-    private boolean inMenu = false;
+    private boolean inMenu = false;//s
+    private boolean isLoading = false;
     private final Font titleFont = new Font("Monaco", Font.BOLD, 40);
     private final Font smallFont = new Font("Monaco", Font.PLAIN, 20);
     private final Font hUDFont = new Font("Monaco", Font.PLAIN, 16);
-    public long seed;
+    public long seed;//s
     public Queue<Character> actionList = new LinkedList<>();
+    // action saved queue(not) have 'Q/q' need to save
 
     /**
      * Method used for playing a fresh game. The game should start from the main menu.
      */
-    public void playWithKeyboard() {
+    public void playWithKeyboard() throws IOException, ClassNotFoundException {
         getMenu();
         inMenu = true;
         depth = 0;
         keyAndMouseListener();
+        if (isLoading) {
+            Game lastSave = loadGame();
+            lastSave.keyAndMouseListener();
+        }
+        System.exit(0);
     }
 
     /**
@@ -66,8 +73,27 @@ public class Game {
                 char action = actionList.remove();
                 isActing = actionQuite(action);
             }
-        } catch (RuntimeException ignore) {}
+        } catch (RuntimeException ignore) {} catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         return newWorld;
+    }
+    //save and load
+    private void saveGame()
+        throws IOException
+    {
+        FileOutputStream fos = new FileOutputStream("../lastGame.load");
+        ObjectOutputStream oos= new ObjectOutputStream(fos);
+        oos.writeObject(this);
+        oos.close();
+    }
+    private Game loadGame()
+        throws IOException, ClassNotFoundException {
+        FileInputStream fis = new FileInputStream("../lastGame.load");
+        ObjectInputStream ois = new ObjectInputStream(fis);
+        Game lastSave = (Game) ois.readObject();
+        ois.close();
+        return lastSave;
     }
     //top layer update###########################################
     void updateTheWorld() {
@@ -75,7 +101,7 @@ public class Game {
         updateHUD();
         StdDraw.show();
     }
-    void keyAndMouseListener() {
+    void keyAndMouseListener() throws IOException {
         boolean isListening = true;
         while (isListening) {
             //mouse
@@ -100,15 +126,21 @@ public class Game {
         }
         //save and exit
     }
-    boolean actionQuite(Character action) {
+    boolean actionQuite(Character action) throws IOException {
         if (action.equals('q') || action.equals('Q')) {
+            // save and exit if wG != null
+            saveGame();
             return false;
         }else {
             player.moveToward(action);
         }
         return true;
     }
-    boolean applyActionOfPlayer(Character action) {
+    boolean applyActionOfPlayer(Character action) throws IOException {
+        if (action.equals('L') || action.equals('l')) {
+            isLoading = true;
+            return false;
+        }
         if (inMenu) {
             if (action.equals('q') || action.equals('Q')) {
                 return false;
@@ -119,6 +151,8 @@ public class Game {
             }
         }else {
             if (action.equals('q') || action.equals('Q')) {
+                //save and exit
+                saveGame();
                 return false;
             }else {
                 boolean toDeeper = player.moveToward(action);
@@ -148,7 +182,7 @@ public class Game {
         StdDraw.setPenColor(StdDraw.WHITE);
         StdDraw.setFont(hUDFont);
         //Depth
-        StdDraw.textLeft(0, HEIGHT - 1, "Depth = " + depth);
+        StdDraw.textLeft(0, HEIGHT - 1, "---Depth = " + depth + "---");
         StdDraw.textRight(WIDTH - 1, HEIGHT - 1, tileDescription);
     }
     //Menu block##############################################################

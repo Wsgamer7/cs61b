@@ -1,11 +1,12 @@
 package byog.Core;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
+import java.io.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class Player {
+public class Player implements Serializable{
     Position p;
     WorldGenerator wG;
     private final int[][] typeMatrix;

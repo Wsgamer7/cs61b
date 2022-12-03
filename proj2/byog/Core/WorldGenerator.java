@@ -1,11 +1,12 @@
 package byog.Core;
 
 import java.util.*;
+import java.io.*;
 
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 
-public class WorldGenerator {
+public class WorldGenerator implements Serializable{
     Random RANDOM;
     TETile[][] world;
     Player player;

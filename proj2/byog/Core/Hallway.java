@@ -1,6 +1,7 @@
 package byog.Core;
+import java.io.*;
 
-public class Hallway {
+public class Hallway implements Serializable{
     Position posLeft;
     Position posRight;
     int[][] typeMatrix;

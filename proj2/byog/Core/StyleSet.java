@@ -1,11 +1,12 @@
 package byog.Core;
 import byog.TileEngine.TETile;
 import static byog.TileEngine.Tileset.*;
+import java.io.*;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class StyleSet {
+public class StyleSet implements Serializable{
     /* indexOfType:
         0 : nothing
         1 : wall

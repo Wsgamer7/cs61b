@@ -1,6 +1,7 @@
 package byog.Core;
+import java.io.*;
 
-public class Position {
+public class Position implements Serializable{
     WorldGenerator wG;
     int[][] typeMatrix;
     int weightOfw;
