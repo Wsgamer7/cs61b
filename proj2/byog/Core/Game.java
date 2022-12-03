@@ -11,7 +11,7 @@ import java.util.Queue;
 
 public class Game implements Serializable{
     private Player player;
-    private int depth;//s
+    private int depth;
     private String tileDescription;
     private final TERenderer ter = new TERenderer();
     private WorldGenerator wG;
@@ -24,14 +24,13 @@ public class Game implements Serializable{
     public static final int rightEmpty = 5;
     public static final int widthOfMenu = 30;
     public static final int heightOfMenu = 50;
-    private boolean inMenu = false;//s
+    private boolean inMenu = false;
     private boolean isLoading = false;
     private final Font titleFont = new Font("Monaco", Font.BOLD, 40);
     private final Font smallFont = new Font("Monaco", Font.PLAIN, 20);
     private final Font hUDFont = new Font("Monaco", Font.PLAIN, 16);
     public long seed;//s
     public Queue<Character> actionList = new LinkedList<>();
-    // action saved queue(not) have 'Q/q' need to save
 
     /**
      * Method used for playing a fresh game. The game should start from the main menu.
@@ -43,6 +42,7 @@ public class Game implements Serializable{
         keyAndMouseListener();
         if (isLoading) {
             Game lastSave = loadGame();
+            ter.initialize(WIDTH, HEIGHT, leftEmpty, downEmpty);//inti for StDraw
             lastSave.keyAndMouseListener();
         }
         System.exit(0);
