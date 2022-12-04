@@ -61,21 +61,19 @@ public class Game implements Serializable{
      * @param input the input string to feed to your program
      * @return the 2D TETile[][] representing the state of the world
      */
-    public TETile[][] playWithInputString(String input) {
+    public TETile[][] playWithInputString(String input) throws IOException, ClassNotFoundException {
         // TODO: Fill out this method to run the game using the input passed in,
         // and return a 2D tile representation of the world that would have been
         // drawn if the same inputs had been given to playWithKeyboard().
         getSeedAndActionFrom(input);
         TETile[][] newWorld = getWorldFormSeed();
         //apply all actions in actionList
-        boolean isActing = true;
-        try {
-            while (isActing) {
-                char action = actionList.remove();
-                isActing = actionQuite(action);
-            }
-        } catch (RuntimeException ignore) {} catch (IOException e) {
-            throw new RuntimeException(e);
+        applyActionList();
+        if (isLoading) {
+            Game lastGame = loadGame();
+            lastGame.entryActionList(actionList);
+            lastGame.applyActionList();
+            newWorld = lastGame.wG.world;
         }
         return newWorld;
     }
@@ -95,6 +93,20 @@ public class Game implements Serializable{
         Game lastSave = (Game) ois.readObject();
         ois.close();
         return lastSave;
+    }
+    private void applyActionList() {
+        boolean isActing = true;
+        try {
+            while (isActing) {
+                char action = actionList.remove();
+                isActing = actionQuite(action);
+            }
+        } catch (RuntimeException ignore) {} catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    private void entryActionList(Queue<Character> actionList) {
+        this.actionList = actionList;
     }
     //top layer update###########################################
     void updateTheWorld() {
@@ -128,6 +140,10 @@ public class Game implements Serializable{
         //save and exit
     }
     boolean actionQuite(Character action) throws IOException {
+        if (action.equals('L') || action.equals('l')) {
+            isLoading = true;
+            return false;
+        }
         if (action.equals(':')) {
             isQuiting = true;
         }else if ((action.equals('q') || action.equals('Q')) && isQuiting) {
@@ -264,6 +280,9 @@ public class Game implements Serializable{
         boolean isFindingSeed = false;
         while (index < input.length()) {
             theChar = input.charAt(index);
+            if (theChar == 'L' || theChar == 'l') {
+                break;
+            }
             boolean isDigit = Character.isDigit(theChar);
             if (isFindingSeed){
                 if (isDigit) {
@@ -278,7 +297,7 @@ public class Game implements Serializable{
             }
             index += 1;
         }
-        //get action
+        //fill in the action list
         while (index < input.length()) {
             theChar = input.charAt(index);
             actionList.add(theChar);
