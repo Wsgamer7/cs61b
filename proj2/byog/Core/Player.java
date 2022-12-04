@@ -17,7 +17,6 @@ public class Player implements Serializable{
         this.styleOfPlayer = Tileset.PLAYER;
         typeMatrix = p.typeMatrix;
         wG = p.wG;
-        intiTowardMap();
     }
     private void intiTowardMap() {
         int[] up = new int[] {0, 1};
@@ -36,9 +35,14 @@ public class Player implements Serializable{
     }
     /* return true if the player get in door */
     boolean moveToward(Character toward) {
+        intiTowardMap();
+        int xDiff = 0;
+        int yDiff = 0;
         int[] towardDetail = towardMap.get(toward);
-        int xDiff = towardDetail[0];
-        int yDiff = towardDetail[1];
+        try {
+            xDiff = towardDetail[0];
+            yDiff = towardDetail[1];
+        } catch (RuntimeException ignore) {}
         Position newPosition = p.moveTo(xDiff, yDiff);
         Position oldPosition = p;
         int type = typeMatrix[newPosition.xPos][newPosition.yPos];

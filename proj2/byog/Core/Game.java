@@ -26,6 +26,7 @@ public class Game implements Serializable{
     public static final int heightOfMenu = 50;
     private boolean inMenu = false;
     private boolean isLoading = false;
+    private boolean isQuiting = false;
     private final Font titleFont = new Font("Monaco", Font.BOLD, 40);
     private final Font smallFont = new Font("Monaco", Font.PLAIN, 20);
     private final Font hUDFont = new Font("Monaco", Font.PLAIN, 16);
@@ -127,8 +128,11 @@ public class Game implements Serializable{
         //save and exit
     }
     boolean actionQuite(Character action) throws IOException {
-        if (action.equals('q') || action.equals('Q')) {
-            // save and exit if wG != null
+        if (action.equals(':')) {
+            isQuiting = true;
+        }else if ((action.equals('q') || action.equals('Q')) && isQuiting) {
+            //save and exit
+            isQuiting = false;
             saveGame();
             return false;
         }else {
@@ -137,10 +141,6 @@ public class Game implements Serializable{
         return true;
     }
     boolean applyActionOfPlayer(Character action) throws IOException {
-        if (action.equals('L') || action.equals('l')) {
-            isLoading = true;
-            return false;
-        }
         if (inMenu) {
             if (action.equals('q') || action.equals('Q')) {
                 return false;
@@ -148,13 +148,20 @@ public class Game implements Serializable{
                 getSeedUseKey();
                 getNextWorld();
                 return true;
+            }else if (action.equals('L') || action.equals('l')) {
+                isLoading = true;
+                return false;
             }
         }else {
-            if (action.equals('q') || action.equals('Q')) {
+            if (action.equals(':')) {
+                isQuiting = true;
+            }else if ((action.equals('q') || action.equals('Q')) && isQuiting) {
                 //save and exit
+                isQuiting = false;
                 saveGame();
                 return false;
             }else {
+                isQuiting = false;
                 boolean toDeeper = player.moveToward(action);
                 if (toDeeper) {
                     getNextWorld();
