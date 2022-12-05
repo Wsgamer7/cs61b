@@ -101,8 +101,8 @@ public class WorldGenerator implements Serializable {
         int xOrigin = RANDOM.nextInt(weightOfW);
         int yOrigin = RANDOM.nextInt(heightOfW);
         Position origin = new Position(xOrigin, yOrigin, this);
-        int weightOfRoom = RANDOM.nextInt(minLengthOfRoom, maxLengthOfRoom);
-        int heightOfRoom = RANDOM.nextInt(minLengthOfRoom, maxLengthOfRoom);
+        int weightOfRoom = minLengthOfRoom + RANDOM.nextInt(maxLengthOfRoom - minLengthOfRoom);
+        int heightOfRoom = minLengthOfRoom + RANDOM.nextInt(maxLengthOfRoom - minLengthOfRoom);
         return new Room(origin, weightOfRoom, heightOfRoom);
     }
     private void getAllRoomsRandomly(int number) {
@@ -156,8 +156,8 @@ public class WorldGenerator implements Serializable {
     }
     /* get a position in a room */
     private Position getAPosInRoom(Room room) {
-        int diffX = RANDOM.nextInt(1, room.weight);
-        int diffY = RANDOM.nextInt(1, room.height);
+        int diffX = 1 + RANDOM.nextInt(room.weight);
+        int diffY = 1 + RANDOM.nextInt(room.height);
         return room.origin.moveTo(diffX, diffY);
     }
     private Position getAPosOnWallOfRoom(Room room) {
