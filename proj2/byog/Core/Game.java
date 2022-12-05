@@ -108,12 +108,12 @@ public class Game implements Serializable {
         this.actionList = actions;
     }
     //top layer update###########################################
-    void updateTheWorld() {
+    private void updateTheWorld() {
         ter.renderFrame(wG.world);
         updateHUD();
         StdDraw.show();
     }
-    void keyAndMouseListener() throws IOException {
+    private void keyAndMouseListener() throws IOException {
         boolean isListening = true;
         while (isListening) {
             //mouse
@@ -138,7 +138,7 @@ public class Game implements Serializable {
         }
         //save and exit
     }
-    boolean actionQuite(Character action) throws IOException {
+    private boolean actionQuite(Character action) throws IOException {
         if (action.equals('L') || action.equals('l')) {
             isLoading = true;
             return false;
@@ -155,7 +155,7 @@ public class Game implements Serializable {
         }
         return true;
     }
-    boolean applyActionOfPlayer(Character action) throws IOException {
+    private boolean applyActionOfPlayer(Character action) throws IOException {
         if (inMenu) {
             if (action.equals('q') || action.equals('Q')) {
                 return false;
@@ -200,7 +200,7 @@ public class Game implements Serializable {
         Position nowPosition = new Position(posFixed[0], posFixed[1], wG);
         return nowPosition.typeOfTile();
     }
-    void updateHUD() {
+    private void updateHUD() {
         StdDraw.setPenColor(StdDraw.WHITE);
         StdDraw.setFont(hUDFont);
         //Depth
@@ -208,7 +208,7 @@ public class Game implements Serializable {
         StdDraw.textRight(WIDTH - 1, HEIGHT - 1, tileDescription);
     }
     //Menu block##############################################################
-    void getMenu() {
+    private void getMenu() {
         StdDraw.setCanvasSize(WIDTH_OF_MENU * 16, HEIGHT_OF_MENU * 16);
         StdDraw.setXscale(0, WIDTH_OF_MENU);
         StdDraw.setYscale(0, HEIGHT_OF_MENU);
@@ -234,7 +234,7 @@ public class Game implements Serializable {
         StdDraw.text(midWidth, (double) HEIGHT_OF_MENU * 4 / 9, s);
         StdDraw.show();
     }
-    void getSeedUseKey() {
+    private void getSeedUseKey() {
         seed = 0;
         drawFrameForSeed("");
 
@@ -254,7 +254,7 @@ public class Game implements Serializable {
         }
     }
     //##################################
-    void getNextWorld() {
+    private void getNextWorld() {
         depth += 1;
         seed += 1;
         ter.initialize(WIDTH, HEIGHT, LEFT_EMPTY, DOWN_EMPTY); //inti for StDraw
@@ -271,7 +271,7 @@ public class Game implements Serializable {
         return finalWorldFrame;
     }
 
-    public void getSeedAndActionFrom(String input) {
+    private void getSeedAndActionFrom(String input) {
         seed = 0;
         char theChar = 'a';
         int index = 0;

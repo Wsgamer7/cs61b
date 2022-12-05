@@ -1,12 +1,12 @@
 package byog.Core;
 import java.io.*;
 
-public class Hallway implements Serializable {
+class Hallway implements Serializable {
     Position posLeft;
     Position posRight;
     int[][] typeMatrix;
-    int weight;
-    int height;
+    private final int weight;
+    private final int height;
     Hallway(Position pos1, Position pos2) {
         if (pos1.xPos < pos2.xPos) {
             posLeft = pos1;
@@ -20,7 +20,7 @@ public class Hallway implements Serializable {
         typeMatrix = posLeft.typeMatrix;
     }
     /* draw a L style Hallway*/
-    void drawLHW() {
+    private void drawLHW() {
         Position p1 = posLeft.moveTo(0, -1);
         int weightOfRoom1 = weight + 1;
         int heightOfRoom1  = 2;
@@ -37,7 +37,7 @@ public class Hallway implements Serializable {
         room2.drawRoom();
     }
     /* draw a gama style Hallway*/
-    void drawGamaHW() {
+    private void drawGamaHW() {
         int weightOfRoom1 = 2;
         int heightOfRoom1  = Math.abs(height) + 1;
         int weightOfRoom2 = weight + 1;

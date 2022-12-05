@@ -12,9 +12,9 @@ public class WorldGenerator implements Serializable {
     Player player;
     int xOffSet;
     int yOffSet;
-    int weightOfW;
-    int heightOfW;
-    int numberOfRoom;
+    final int weightOfW;
+    final int heightOfW;
+    private final int numberOfRoom;
     ArrayList<Room> allRooms;
     Position positionOfDoor;
     Position positionOfKey;
@@ -36,7 +36,7 @@ public class WorldGenerator implements Serializable {
         numberOfRoom = (int) Math.floor(numberOfRoomDouble);
         intiTypeDescription();
     }
-    void intiTypeDescription() {
+    private void intiTypeDescription() {
         typeDescription.put(0, "Nothing");
         typeDescription.put(1, "Wall");
         typeDescription.put(2, "Floor");
@@ -54,7 +54,7 @@ public class WorldGenerator implements Serializable {
         intiPlayer();
     }
 
-    void drawATile(TETile tile, Position position) {
+    private void drawATile(TETile tile, Position position) {
         int x = position.xPos;
         int y = position.yPos;
         world[x][y] = tile;
@@ -67,7 +67,7 @@ public class WorldGenerator implements Serializable {
         drawATile(drawStored, position);
     }
     /* trans integer in typeMatrix to TETile in world*/
-    void transToWorld() {
+    private void transToWorld() {
         int typeOfTile = 0;
         for (int i = 0; i < weightOfW; i++) {
             for (int j = 0; j < heightOfW; j++) {
@@ -76,11 +76,11 @@ public class WorldGenerator implements Serializable {
             }
         }
     }
-    Room getARoomFromAllRoom() {
+    private Room getARoomFromAllRoom() {
         int randomIndex = RANDOM.nextInt(allRooms.size());
         return allRooms.get(randomIndex);
     }
-    Position getAPositionInALlRooms() {
+    private Position getAPositionInALlRooms() {
         Room randomRoom = getARoomFromAllRoom();
         return getAPosInRoom(randomRoom);
     }
@@ -97,7 +97,7 @@ public class WorldGenerator implements Serializable {
         player.drawPlayer();
     }
     /* get a Random room in the world */
-    Room getARandomRoom() {
+    private Room getARandomRoom() {
         int xOrigin = RANDOM.nextInt(weightOfW);
         int yOrigin = RANDOM.nextInt(heightOfW);
         Position origin = new Position(xOrigin, yOrigin, this);
@@ -105,7 +105,7 @@ public class WorldGenerator implements Serializable {
         int heightOfRoom = RANDOM.nextInt(minLengthOfRoom, maxLengthOfRoom);
         return new Room(origin, weightOfRoom, heightOfRoom);
     }
-    void getAllRoomsRandomly(int number) {
+    private void getAllRoomsRandomly(int number) {
         ArrayList<Room> allRooms1 = new ArrayList<>();
         while (number > 0) {
             int countOfFailContinue = 0;
@@ -124,7 +124,7 @@ public class WorldGenerator implements Serializable {
         this.allRooms = allRooms1;
     }
     /* drawAllHallWaLL destructively, it describes room as unconnected or connected */
-    void drawAllHallWall(ArrayList<Room> unconnectedRooms) {
+    private void drawAllHallWall(ArrayList<Room> unconnectedRooms) {
         Room lastConnected = unconnectedRooms.get(0); //select a room as the start randomly
         unconnectedRooms.remove(lastConnected);
         while (unconnectedRooms.size() > 0) {
@@ -135,13 +135,13 @@ public class WorldGenerator implements Serializable {
         }
     }
     /* take a arraylistOfRooms and draw all room in it */
-    void drawListOfRooms(ArrayList<Room> arrayListOfRoom) {
+    private void drawListOfRooms(ArrayList<Room> arrayListOfRoom) {
         for (Room room : arrayListOfRoom) {
             room.drawRoom();
         }
     }
     /* check the new room is in the world and not overlap with other room*/
-    boolean checkThNewRoom(ArrayList<Room> oldList, Room newRoom) {
+    private boolean checkThNewRoom(ArrayList<Room> oldList, Room newRoom) {
         // check the new room is in the world
         if (!newRoom.inWorld()) {
             return false;
@@ -155,12 +155,12 @@ public class WorldGenerator implements Serializable {
         return true;
     }
     /* get a position in a room */
-    Position getAPosInRoom(Room room) {
+    private Position getAPosInRoom(Room room) {
         int diffX = RANDOM.nextInt(1, room.weight);
         int diffY = RANDOM.nextInt(1, room.height);
         return room.origin.moveTo(diffX, diffY);
     }
-    Position getAPosOnWallOfRoom(Room room) {
+    private Position getAPosOnWallOfRoom(Room room) {
         Position randomP = getAPosInRoom(room);
         Position toReturn;
         int toWard = RANDOM.nextInt(4);
@@ -178,14 +178,14 @@ public class WorldGenerator implements Serializable {
         }
         return toReturn;
     }
-    void getDoorAndDraw() {
+    private void getDoorAndDraw() {
         int indexOfRandomRoom = RANDOM.nextInt(allRooms.size());
         Room randomRoom = allRooms.get(indexOfRandomRoom);
         positionOfDoor = getAPosOnWallOfRoom(randomRoom);
         numOfOpenedDoor = RANDOM.nextInt(2);
         drawTheDoor();
     }
-    void drawTheDoor() {
+    private void drawTheDoor() {
         typeMatrix[positionOfDoor.xPos][positionOfDoor.yPos] = 3 + numOfOpenedDoor;
         world[positionOfDoor.xPos][positionOfDoor.yPos] = mapToTile[3 + numOfOpenedDoor];
     }
@@ -193,12 +193,12 @@ public class WorldGenerator implements Serializable {
         numOfOpenedDoor = 1;
         drawTheDoor();
     }
-    Hallway getHWFromTwoRooms(Room room1, Room room2) {
+    private Hallway getHWFromTwoRooms(Room room1, Room room2) {
         Position pos1 = getAPosInRoom(room1);
         Position pos2 = getAPosInRoom(room2);
         return new Hallway(pos1, pos2);
     }
-    void drawHWFromTwoRooms(Room room1, Room room2) {
+    private void drawHWFromTwoRooms(Room room1, Room room2) {
         Hallway hw = getHWFromTwoRooms(room1, room2);
         int wayOfDrawing = RANDOM.nextInt(2);
         hw.drawHW(wayOfDrawing);

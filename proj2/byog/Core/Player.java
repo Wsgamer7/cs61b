@@ -6,9 +6,9 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Player implements Serializable {
+ class Player implements Serializable {
     Position p;
-    WorldGenerator wG;
+    private final WorldGenerator wG;
     private final int[][] typeMatrix;
     private final Map<Character, int[]> towardMap = new HashMap<>();
     private TETile styleOfPlayer;
