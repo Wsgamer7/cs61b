@@ -6,7 +6,7 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Player implements Serializable{
+public class Player implements Serializable {
     Position p;
     WorldGenerator wG;
     private final int[][] typeMatrix;
@@ -42,13 +42,13 @@ public class Player implements Serializable{
         try {
             xDiff = towardDetail[0];
             yDiff = towardDetail[1];
-        } catch (RuntimeException ignore) {}
+        } catch (RuntimeException ignore) { }
         Position newPosition = p.moveTo(xDiff, yDiff);
         Position oldPosition = p;
         int type = typeMatrix[newPosition.xPos][newPosition.yPos];
         if (newPosition.equals(wG.positionOfDoor) && wG.numOfOpenedDoor == 1) {
             return true;
-        }else if (type == 2) {
+        } else if (type == 2) {
             if (newPosition.equals(wG.positionOfKey)) {
                 wG.openTheDoor();
             }
@@ -58,8 +58,8 @@ public class Player implements Serializable{
         }
         return false;
     }
-    void changePlayerStyle(TETile styleOfPlayer) {
-        this.styleOfPlayer = styleOfPlayer;
+    void changePlayerStyle(TETile newStyle) {
+        this.styleOfPlayer = newStyle;
         drawPlayer();
     }
 }

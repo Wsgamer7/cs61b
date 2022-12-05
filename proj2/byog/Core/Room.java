@@ -3,14 +3,14 @@ import java.io.*;
 
 import java.util.ArrayList;
 
-public class Room implements Serializable{
+public class Room implements Serializable {
     int[][] typeMatrix;
     Position origin;
     Position fasterP;
     int weight;
     int height;
     /* the constructor of a room*/
-    Room(Position origin, int weight, int height){
+    Room(Position origin, int weight, int height) {
         this.origin = origin;
         typeMatrix = origin.typeMatrix;
         fasterP = origin.moveTo(weight, height);
@@ -18,7 +18,7 @@ public class Room implements Serializable{
         this.height = height;
     }
     /* return true if this room in the world*/
-    boolean inWorld(){
+    boolean inWorld() {
         return origin.inWorld() && fasterP.inWorld();
     }
     /* return the distance bettwen this and room */
@@ -38,11 +38,11 @@ public class Room implements Serializable{
         return mostClosedRoom;
     }
     /* return ture if this room overlap room1*/
-    boolean overLap(Room room1){
+    boolean overLap(Room room1) {
         return origin.isContained(room1) || fasterP.isContained(room1);
     }
     /* draw wall(1) for this room*/
-    void drawWall(){
+    void drawWall() {
         Position a = origin;
         a.drawARow(1, weight);
         a.drawAColum(1, height);
@@ -52,15 +52,15 @@ public class Room implements Serializable{
         c.drawARow(1, weight);
     }
     /* draw floor(2) for this room*/
-    void drawFloor(){
+    void drawFloor() {
         Position start = origin.moveTo(1, 1);
-        for(int i = 0; i < height - 1; i++) {
+        for (int i = 0; i < height - 1; i++) {
             start.drawARow(2, weight - 2);
             start = start.moveTo(0, 1);
         }
     }
     /* draw this room*/
-    void drawRoom(){
+    void drawRoom() {
         if (height > 1 && weight > 1) {
             drawFloor();
             drawWall();

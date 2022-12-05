@@ -9,7 +9,7 @@ import java.io.IOException;
  *  in either keyboard or input string mode.
  */
 public class Main {
-    public static void main(String[] args) throws IOException, ClassNotFoundException{
+    public static void main(String[] args) throws IOException, ClassNotFoundException {
         if (args.length > 1) {
             System.out.println("Can only have one argument - the input string");
             System.exit(0);

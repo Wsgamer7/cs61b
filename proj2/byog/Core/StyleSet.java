@@ -6,7 +6,7 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class StyleSet implements Serializable{
+public class StyleSet implements Serializable {
     /* indexOfType:
         0 : nothing
         1 : wall
@@ -14,20 +14,20 @@ public class StyleSet implements Serializable{
         3 : lockedDoor
         4 : openedDoor
      */
-    private static final TETile[] fixStyle = new TETile[] {LOCKED_DOOR, UNLOCKED_DOOR};
-    private static final Map<String, TETile[]> styleMap = new HashMap<>();
+    private static final TETile[] FIXSTYLE = new TETile[] {LOCKED_DOOR, UNLOCKED_DOOR};
+    private static final Map<String, TETile[]> STYLEMAP = new HashMap<>();
     static TETile[] getAStyle(String name) {
         intiStyle();
-        return styleMap.get(name);
+        return STYLEMAP.get(name);
     }
     private static void intiStyle() {
         TETile[] defaultS = new TETile[] {NOTHING, WALL, FLOOR};
         riseAStyle("default", defaultS);
     }
     private static void riseAStyle(String name, TETile[] specialStyle) {
-        TETile[] totalStyle = new TETile[fixStyle.length + specialStyle.length];
+        TETile[] totalStyle = new TETile[FIXSTYLE.length + specialStyle.length];
         System.arraycopy(specialStyle, 0, totalStyle, 0, specialStyle.length);
-        System.arraycopy(fixStyle, 0, totalStyle, specialStyle.length, fixStyle.length);
-        styleMap.put(name, totalStyle);
+        System.arraycopy(FIXSTYLE, 0, totalStyle, specialStyle.length, FIXSTYLE.length);
+        STYLEMAP.put(name, totalStyle);
     }
 }

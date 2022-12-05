@@ -6,7 +6,7 @@ import java.io.*;
 import byog.TileEngine.TETile;
 import byog.TileEngine.Tileset;
 
-public class WorldGenerator implements Serializable{
+public class WorldGenerator implements Serializable {
     Random RANDOM;
     TETile[][] world;
     Player player;
@@ -63,16 +63,16 @@ public class WorldGenerator implements Serializable{
     void backAPoint(Position position) {
         int x = position.xPos;
         int y = position.yPos;
-        TETile DrawStored = mapToTile[typeMatrix[x][y]];
-        drawATile(DrawStored, position);
+        TETile drawStored = mapToTile[typeMatrix[x][y]];
+        drawATile(drawStored, position);
     }
     /* trans integer in typeMatrix to TETile in world*/
-    void transToWorld(){
+    void transToWorld() {
         int typeOfTile = 0;
         for (int i = 0; i < weightOfW; i++) {
             for (int j = 0; j < heightOfW; j++) {
                 typeOfTile = typeMatrix[i][j];
-                world[i][j]= mapToTile[typeOfTile];
+                world[i][j] = mapToTile[typeOfTile];
             }
         }
     }
@@ -114,7 +114,7 @@ public class WorldGenerator implements Serializable{
                 allRooms1.add(roomAdded);
                 number -= 1;
                 countOfFailContinue = 0;
-            }else {
+            } else {
                 countOfFailContinue += 1;
                 if (countOfFailContinue > 4) {
                     break;
@@ -155,7 +155,7 @@ public class WorldGenerator implements Serializable{
         return true;
     }
     /* get a position in a room */
-    Position getAPosInRoom(Room room){
+    Position getAPosInRoom(Room room) {
         int diffX = RANDOM.nextInt(1, room.weight);
         int diffY = RANDOM.nextInt(1, room.height);
         return room.origin.moveTo(diffX, diffY);
@@ -166,11 +166,11 @@ public class WorldGenerator implements Serializable{
         int toWard = RANDOM.nextInt(4);
         if (toWard == 0) {
             toReturn = new Position(randomP.xPos, room.origin.yPos, this); // Down
-        }else if (toWard == 1) {
+        } else if (toWard == 1) {
             toReturn = new Position(room.fasterP.xPos, randomP.yPos, this); // Right
-        }else if (toWard == 2) {
+        } else if (toWard == 2) {
             toReturn = new Position(randomP.xPos, room.fasterP.yPos, this); // Up
-        }else {
+        } else {
             toReturn = new Position(room.origin.xPos, randomP.yPos, this); //Left
         }
         if (typeMatrix[toReturn.xPos][toReturn.yPos] != 1) {

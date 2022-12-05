@@ -9,7 +9,7 @@ import java.awt.*;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class Game implements Serializable{
+public class Game implements Serializable {
     private Player player;
     private int depth;
     private String tileDescription;
@@ -18,20 +18,20 @@ public class Game implements Serializable{
     /* Feel free to change the width and height. */
     public static final int WIDTH = 50;
     public static final int HEIGHT = 40;
-    public static final int downEmpty = 2;
-    public static final int upEmpty = 5;
-    public static final int leftEmpty = 5;
-    public static final int rightEmpty = 5;
-    public static final int widthOfMenu = 30;
-    public static final int heightOfMenu = 50;
+    public static final int DOWN_EMPTY = 2;
+    public static final int UP_EMPTY = 5;
+    public static final int LEFT_EMPTY = 5;
+    public static final int RIGHT_EMPTY = 5;
+    public static final int WIDTH_OF_MENU = 30;
+    public static final int HEIGHT_OF_MENU = 50;
     private boolean inMenu = false;
     private boolean isLoading = false;
     private boolean isQuiting = false;
     private final Font titleFont = new Font("Monaco", Font.BOLD, 40);
     private final Font smallFont = new Font("Monaco", Font.PLAIN, 20);
     private final Font hUDFont = new Font("Monaco", Font.PLAIN, 16);
-    public long seed;//s
-    public Queue<Character> actionList = new LinkedList<>();
+    private long seed;
+    private Queue<Character> actionList = new LinkedList<>();
 
     /**
      * Method used for playing a fresh game. The game should start from the main menu.
@@ -43,7 +43,7 @@ public class Game implements Serializable{
         keyAndMouseListener();
         if (isLoading) {
             Game lastSave = loadGame();
-            ter.initialize(WIDTH, HEIGHT, leftEmpty, downEmpty);//inti for StDraw
+            ter.initialize(WIDTH, HEIGHT, LEFT_EMPTY, DOWN_EMPTY); //inti for StDraw
             lastSave.keyAndMouseListener();
         }
         System.exit(0);
@@ -79,10 +79,9 @@ public class Game implements Serializable{
     }
     //save and load
     private void saveGame()
-        throws IOException
-    {
+        throws IOException {
         FileOutputStream fos = new FileOutputStream("../lastGame.load");
-        ObjectOutputStream oos= new ObjectOutputStream(fos);
+        ObjectOutputStream oos = new ObjectOutputStream(fos);
         oos.writeObject(this);
         oos.close();
     }
@@ -101,12 +100,12 @@ public class Game implements Serializable{
                 char action = actionList.remove();
                 isActing = actionQuite(action);
             }
-        } catch (RuntimeException ignore) {} catch (IOException e) {
+        } catch (RuntimeException ignore) { } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
-    private void entryActionList(Queue<Character> actionList) {
-        this.actionList = actionList;
+    private void entryActionList(Queue<Character> actions) {
+        this.actionList = actions;
     }
     //top layer update###########################################
     void updateTheWorld() {
@@ -146,12 +145,12 @@ public class Game implements Serializable{
         }
         if (action.equals(':')) {
             isQuiting = true;
-        }else if ((action.equals('q') || action.equals('Q')) && isQuiting) {
+        } else if ((action.equals('q') || action.equals('Q')) && isQuiting) {
             //save and exit
             isQuiting = false;
             saveGame();
             return false;
-        }else {
+        } else {
             player.moveToward(action);
         }
         return true;
@@ -160,23 +159,23 @@ public class Game implements Serializable{
         if (inMenu) {
             if (action.equals('q') || action.equals('Q')) {
                 return false;
-            }else if (action.equals('n') || action.equals('N')) {
+            } else if (action.equals('n') || action.equals('N')) {
                 getSeedUseKey();
                 getNextWorld();
                 return true;
-            }else if (action.equals('L') || action.equals('l')) {
+            } else if (action.equals('L') || action.equals('l')) {
                 isLoading = true;
                 return false;
             }
-        }else {
+        } else {
             if (action.equals(':')) {
                 isQuiting = true;
-            }else if ((action.equals('q') || action.equals('Q')) && isQuiting) {
+            } else if ((action.equals('q') || action.equals('Q')) && isQuiting) {
                 //save and exit
                 isQuiting = false;
                 saveGame();
                 return false;
-            }else {
+            } else {
                 isQuiting = false;
                 boolean toDeeper = player.moveToward(action);
                 if (toDeeper) {
@@ -190,8 +189,8 @@ public class Game implements Serializable{
     //HUD
     private int[] transCoordinate(int x, int y) {
         int[] toReturn = new int[2];
-        toReturn[0] = x - leftEmpty;
-        toReturn[1] = y - downEmpty;
+        toReturn[0] = x - LEFT_EMPTY;
+        toReturn[1] = y - DOWN_EMPTY;
         return toReturn;
     }
     private String getTypeFromXY(double x, double y) {
@@ -210,29 +209,29 @@ public class Game implements Serializable{
     }
     //Menu block##############################################################
     void getMenu() {
-        StdDraw.setCanvasSize(widthOfMenu * 16, heightOfMenu * 16);
-        StdDraw.setXscale(0, widthOfMenu);
-        StdDraw.setYscale(0, heightOfMenu);
+        StdDraw.setCanvasSize(WIDTH_OF_MENU * 16, HEIGHT_OF_MENU * 16);
+        StdDraw.setXscale(0, WIDTH_OF_MENU);
+        StdDraw.setYscale(0, HEIGHT_OF_MENU);
         StdDraw.clear(Color.BLACK);
         StdDraw.enableDoubleBuffering();
-        int midWidth = widthOfMenu / 2;
+        int midWidth = WIDTH_OF_MENU / 2;
         StdDraw.setPenColor(StdDraw.WHITE);
         StdDraw.setFont(titleFont);
-        StdDraw.text(midWidth, (double) heightOfMenu * 7 / 9, "BYoG");
+        StdDraw.text(midWidth, (double) HEIGHT_OF_MENU * 7 / 9, "BYoG");
         StdDraw.setFont(smallFont);
-        StdDraw.text(midWidth, (double) heightOfMenu * 5 / 9, "New Game (N)");
-        StdDraw.text(midWidth, (double) heightOfMenu * 4 / 9, "Load Game (L)");
-        StdDraw.text(midWidth, (double) heightOfMenu * 3 / 9, "Quit (Q)");
+        StdDraw.text(midWidth, (double) HEIGHT_OF_MENU * 5 / 9, "New Game (N)");
+        StdDraw.text(midWidth, (double) HEIGHT_OF_MENU * 4 / 9, "Load Game (L)");
+        StdDraw.text(midWidth, (double) HEIGHT_OF_MENU * 3 / 9, "Quit (Q)");
         StdDraw.show();
     }
     private void drawFrameForSeed(String s) {
-        int midWidth = widthOfMenu / 2;
+        int midWidth = WIDTH_OF_MENU / 2;
 
         StdDraw.clear(Color.black);
         StdDraw.setPenColor(Color.white);
 
-        StdDraw.text(midWidth, (double) heightOfMenu * 5 / 9, "Entry seed (press S to end)");
-        StdDraw.text(midWidth, (double) heightOfMenu * 4 / 9, s);
+        StdDraw.text(midWidth, (double) HEIGHT_OF_MENU * 5 / 9, "Entry seed (press S to end)");
+        StdDraw.text(midWidth, (double) HEIGHT_OF_MENU * 4 / 9, s);
         StdDraw.show();
     }
     void getSeedUseKey() {
@@ -258,16 +257,15 @@ public class Game implements Serializable{
     void getNextWorld() {
         depth += 1;
         seed += 1;
-        ter.initialize(WIDTH, HEIGHT, leftEmpty, downEmpty);//inti for StDraw
+        ter.initialize(WIDTH, HEIGHT, LEFT_EMPTY, DOWN_EMPTY); //inti for StDraw
         getWorldFormSeed();
         tileDescription = "";
         ter.renderFrame(wG.world);
         inMenu = false;
     }
     private TETile[][] getWorldFormSeed() {
-//        ter.initialize(WIDTH, HEIGHT, leftEmpty, downEmpty);
-        TETile[][] finalWorldFrame = new TETile[WIDTH - leftEmpty - rightEmpty][HEIGHT - downEmpty - upEmpty];
-        wG = new WorldGenerator(seed, finalWorldFrame, leftEmpty, downEmpty);
+        TETile[][] finalWorldFrame = new TETile[WIDTH - LEFT_EMPTY - RIGHT_EMPTY][HEIGHT - DOWN_EMPTY - UP_EMPTY];
+        wG = new WorldGenerator(seed, finalWorldFrame, LEFT_EMPTY, DOWN_EMPTY);
         wG.toGenerator();
         this.player = wG.player;
         return finalWorldFrame;
@@ -288,11 +286,11 @@ public class Game implements Serializable{
                 if (isDigit) {
                     int theInt = Character.getNumericValue(theChar);
                     seed = seed * 10 + theInt;
-                }else if (theChar == 's' || theChar == 'S') {
+                } else if (theChar == 's' || theChar == 'S') {
                     isFindingSeed = false;
                     break;
                 }
-            }else if (theChar == 'n' || theChar == 'N') {
+            } else if (theChar == 'n' || theChar == 'N') {
                 isFindingSeed = true;
             }
             index += 1;
