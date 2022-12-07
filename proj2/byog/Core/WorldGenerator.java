@@ -101,8 +101,8 @@ public class WorldGenerator implements Serializable {
         int xOrigin = RANDOM.nextInt(weightOfW);
         int yOrigin = RANDOM.nextInt(heightOfW);
         Position origin = new Position(xOrigin, yOrigin, this);
-        int weightOfRoom = RANDOM.nextInt(minLengthOfRoom, maxLengthOfRoom);
-        int heightOfRoom = RANDOM.nextInt(minLengthOfRoom, maxLengthOfRoom);
+        int weightOfRoom = minLengthOfRoom + RANDOM.nextInt(maxLengthOfRoom - minLengthOfRoom);
+        int heightOfRoom = minLengthOfRoom + RANDOM.nextInt(maxLengthOfRoom - minLengthOfRoom);
         return new Room(origin, weightOfRoom, heightOfRoom);
     }
     private void getAllRoomsRandomly(int number) {
