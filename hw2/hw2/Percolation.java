@@ -23,21 +23,9 @@ public class Percolation {
         //union to virtual sites
         numOfUpVirSite = N * N;
         numOfDownVirSite = N * N + 1;
-        unionARowToVirSite(0, numOfUpVirSite);
-        unionARowToVirSite(N - 1, numOfDownVirSite);
-    }
-    /* union sites in a row to a virtual site
-    N*N : up virtual site
-    N*N + 1 : down virtual site*/
-    public void unionARowToVirSite(int row, int indexOfVSite) {
-        checkOut(row, 0);
-        for (int col = 0; col < N; col++) {
-            int numOfSiteConnected = xyToNum(row, col);
-            dSet.union(indexOfVSite, numOfSiteConnected);
-        }
     }
     /* check out if (row, col) is in the grid */
-    public void checkOut(int row, int col) {
+    private void checkOut(int row, int col) {
         boolean goodInX = (row >= 0) && (row < N);
         boolean goodInY = (col >= 0) && (col < N);
         if (!(goodInX && goodInY)) {
@@ -45,7 +33,7 @@ public class Percolation {
         }
     }
     /*trans a pair to a number */
-    public int xyToNum(int x, int y) {
+    private int xyToNum(int x, int y) {
         checkOut(x, y);
         return N * x + y;
     }
@@ -57,8 +45,14 @@ public class Percolation {
         }
         isOpen[row][col] = true;
         numberOfOpenSites += 1;
-        // conner case!
         int thisSite1D = xyToNum(row, col);
+        // conner case for first and last row
+        if (row == 0) {
+            dSet.union(thisSite1D, numOfUpVirSite);
+        }else if (row == N - 1) {
+            dSet.union(thisSite1D, numOfDownVirSite);
+        }
+
         ArrayList<int[]> sitesAround = sitesAround(row, col);
         for (int[] site : sitesAround) {
             if (isOpen(site[0], site[1])) {
@@ -68,7 +62,7 @@ public class Percolation {
         }
     }
     /*get sites around the site (row, col) */
-    public ArrayList<int[]> sitesAround(int row, int col) {
+    private ArrayList<int[]> sitesAround(int row, int col) {
         ArrayList<int[]> sitesList = new ArrayList<>();
         sitesList.add(new int[] {row, col - 1});
         sitesList.add(new int[] {row, col + 1});
@@ -105,5 +99,7 @@ public class Percolation {
     /* return ture if the system percolate */
     public boolean percolates() {
         return dSet.connected(numOfUpVirSite, numOfDownVirSite);
+    }
+    public static void main(String[] args) {
     }
 }
