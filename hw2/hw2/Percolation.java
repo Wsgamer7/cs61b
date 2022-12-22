@@ -49,7 +49,8 @@ public class Percolation {
         // conner case for first and last row
         if (row == 0) {
             dSet.union(thisSite1D, numOfUpVirSite);
-        }else if (row == N - 1) {
+        }
+        if (row == N - 1) {
             dSet.union(thisSite1D, numOfDownVirSite);
         }
 
