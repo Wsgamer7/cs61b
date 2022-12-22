@@ -156,8 +156,8 @@ public class WorldGenerator implements Serializable {
     }
     /* get a position in a room */
     private Position getAPosInRoom(Room room) {
-        int diffX = RANDOM.nextInt(1, room.weight);
-        int diffY = RANDOM.nextInt(1, room.height);
+        int diffX = 1 + RANDOM.nextInt(room.weight);
+        int diffY = 1 + RANDOM.nextInt(room.height);
         return room.origin.moveTo(diffX, diffY);
     }
     private Position getAPosOnWallOfRoom(Room room) {

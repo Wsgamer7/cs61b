@@ -42,7 +42,9 @@ import java.util.Map;
         try {
             xDiff = towardDetail[0];
             yDiff = towardDetail[1];
-        } catch (RuntimeException ignore) { }
+        } catch (RuntimeException e) {
+            e.getStackTrace();
+        }
         Position newPosition = p.moveTo(xDiff, yDiff);
         Position oldPosition = p;
         int type = typeMatrix[newPosition.xPos][newPosition.yPos];

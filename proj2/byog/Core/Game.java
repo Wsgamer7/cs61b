@@ -108,8 +108,8 @@ public class Game implements Serializable {
                 char action = actionList.remove();
                 isActing = actionQuite(action);
             }
-        } catch (RuntimeException ignore) { } catch (IOException e) {
-            throw new RuntimeException(e);
+        } catch (RuntimeException | IOException e) {
+            e.getStackTrace();
         }
     }
     private void entryActionList(Queue<Character> actions) {

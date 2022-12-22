@@ -43,7 +43,9 @@ public class Position implements Serializable {
                 toDraw.drawThePos(typeOfTile);
                 toDraw = toDraw.moveTo(0, 1);
             }
-        } catch (RuntimeException ignore) { }
+        } catch (RuntimeException e) {
+            e.getStackTrace();
+        }
     }
     /* add a row of integers in typeMatrix*/
     void drawARow(int typeOfTile, int weight) {
@@ -53,7 +55,9 @@ public class Position implements Serializable {
                 toDraw.drawThePos(typeOfTile);
                 toDraw = toDraw.moveTo(1, 0);
             }
-        } catch (RuntimeException ignore) { }
+        } catch (RuntimeException e) {
+            e.getStackTrace();
+        }
     }
     /* return true if this position is in the world*/
     boolean inWorld() {
