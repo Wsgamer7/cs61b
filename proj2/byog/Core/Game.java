@@ -16,7 +16,7 @@ public class Game implements Serializable {
     private final TERenderer ter = new TERenderer();
     private WorldGenerator wG;
     /* Feel free to change the width and height. */
-    public static final int WIDTH = 50;
+    public static final int WIDTH = 60;
     public static final int HEIGHT = 40;
     public static final int DOWN_EMPTY = 2;
     public static final int UP_EMPTY = 5;
@@ -36,15 +36,19 @@ public class Game implements Serializable {
     /**
      * Method used for playing a fresh game. The game should start from the main menu.
      */
-    public void playWithKeyboard() throws IOException, ClassNotFoundException {
+    public void playWithKeyboard() {
         getMenu();
         inMenu = true;
         depth = 0;
-        keyAndMouseListener();
-        if (isLoading) {
-            Game lastSave = loadGame();
-            ter.initialize(WIDTH, HEIGHT, LEFT_EMPTY, DOWN_EMPTY); //inti for StDraw
-            lastSave.keyAndMouseListener();
+        try {
+            keyAndMouseListener();
+            if (isLoading) {
+                Game lastSave = loadGame();
+                ter.initialize(WIDTH, HEIGHT, LEFT_EMPTY, DOWN_EMPTY); //inti for StDraw
+                lastSave.keyAndMouseListener();
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.getStackTrace();
         }
         System.exit(0);
     }
@@ -61,7 +65,7 @@ public class Game implements Serializable {
      * @param input the input string to feed to your program
      * @return the 2D TETile[][] representing the state of the world
      */
-    public TETile[][] playWithInputString(String input) throws IOException, ClassNotFoundException {
+    public TETile[][] playWithInputString(String input) {
         // TODO: Fill out this method to run the game using the input passed in,
         // and return a 2D tile representation of the world that would have been
         // drawn if the same inputs had been given to playWithKeyboard().
@@ -70,10 +74,14 @@ public class Game implements Serializable {
         //apply all actions in actionList
         applyActionList();
         if (isLoading) {
-            Game lastGame = loadGame();
-            lastGame.entryActionList(actionList);
-            lastGame.applyActionList();
-            newWorld = lastGame.wG.world;
+            try {
+                Game lastGame = loadGame();
+                lastGame.entryActionList(actionList);
+                lastGame.applyActionList();
+                newWorld = lastGame.wG.world;
+            } catch (IOException | ClassNotFoundException exception) {
+                exception.getStackTrace();
+            }
         }
         return newWorld;
     }
