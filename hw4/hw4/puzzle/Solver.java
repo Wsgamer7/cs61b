@@ -40,7 +40,8 @@ public class Solver {
     private void insertNeighbours(SearchNode searchNode, MinPQ<SearchNode> minPQ) {
          Iterable<WorldState> neighbours= searchNode.worldState().neighbors();
          for(WorldState neighbour : neighbours) {
-             if (neighbour.equals(searchNode.getPreSearchNode().worldState())) {
+             SearchNode grandParent = searchNode.getPreSearchNode();
+             if (grandParent != null && neighbour.equals(grandParent.worldState())) {
                  continue;
              }
              SearchNode neighbourNode = new SearchNode(neighbour, searchNode.numOfMoved() + 1, searchNode);
