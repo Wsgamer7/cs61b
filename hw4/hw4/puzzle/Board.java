@@ -8,8 +8,8 @@ public class Board implements WorldState{
     private final int size;
     private int[][] allIndexOfNum;
     /* Constructs a board from an N-by-N array of tiles where tiles[i][j] = tile at row i, column j */
-    public Board(int[][] tiles) {
-        this.tiles = tiles;
+    public Board(int[][] tilesPassed) {
+        this.tiles = copyOfTiles(tilesPassed);
         size = tiles[0].length;
         getAllIndex();
     }
@@ -39,7 +39,7 @@ public class Board implements WorldState{
         if (n == 0) {
             return new int[] {size - 1, size - 1};
         }
-        return new int[] {n % size, n / size};
+        return new int[] {(n - 1) / size, (n - 1) % size};
     }
     private void validNumber(int n) {
         if (n < 0 || n > size * size - 1) {
@@ -49,17 +49,16 @@ public class Board implements WorldState{
     private int[] blankIndex() {
         return allIndexOfNum[0];
     }
-    private int[][] copyOfTiles(){
-        int[][] copied = new int[size][size];
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                copied[i][j] = tileAt(i, j);
-            }
+    private int[][] copyOfTiles(int[][] tilesPassed){
+        int sizeOfTile = tilesPassed[0].length;
+        int[][] copied = new int[sizeOfTile][sizeOfTile];
+        for (int i = 0; i < sizeOfTile; i++) {
+            System.arraycopy(tilesPassed[i], 0, copied[i], 0, sizeOfTile);
         }
         return copied;
     }
     private Board swap(int[] index1, int[] index2) {
-        int[][] tilesCopied = copyOfTiles();
+        int[][] tilesCopied = copyOfTiles(tiles);
         int temp = tileAt(index1);
         tilesCopied[index1[0]][index1[1]] =tileAt(index2);
         tilesCopied[index2[0]][index2[1]] = temp;
@@ -117,6 +116,26 @@ public class Board implements WorldState{
         }
         return sumOfManhattan;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj.getClass() != this.getClass()) {
+            return false;
+        }
+        Board other = (Board) obj;
+        if (size != other.size()) {
+            return false;
+        }
+        for (int i = 0; i < size(); i++) {
+            for (int j = 0; j < size(); j ++) {
+                if (tileAt(i,j) != other.tileAt(i, j)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     /** Returns the string representation of the board.
       * Uncomment this method. */
     public String toString() {
@@ -132,5 +151,4 @@ public class Board implements WorldState{
         s.append("\n");
         return s.toString();
     }
-
 }
