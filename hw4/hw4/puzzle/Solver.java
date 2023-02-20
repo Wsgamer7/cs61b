@@ -1,6 +1,10 @@
 package hw4.puzzle;
 
 import edu.princeton.cs.algs4.MinPQ;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Stack;
 
 public class Solver {
@@ -24,7 +28,11 @@ public class Solver {
             pointer = pointer.getPreSearchNode();
             allStates.add(pointer.worldState());
         }
-        return allStates;
+        ArrayList<WorldState> revAllStates = new ArrayList<>();
+        while (!allStates.isEmpty()) {
+            revAllStates.add(allStates.pop());
+        }
+        return revAllStates;
     }
     private SearchNode bestFirstSearch() {
         MinPQ<SearchNode> minPQ = new MinPQ<>();
