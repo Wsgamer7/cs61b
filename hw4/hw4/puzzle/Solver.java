@@ -38,14 +38,14 @@ public class Solver {
         }
     }
     private void insertNeighbours(SearchNode searchNode, MinPQ<SearchNode> minPQ) {
-         Iterable<WorldState> neighbours= searchNode.worldState().neighbors();
-         for(WorldState neighbour : neighbours) {
-             SearchNode grandParent = searchNode.getPreSearchNode();
-             if (grandParent != null && neighbour.equals(grandParent.worldState())) {
-                 continue;
-             }
-             SearchNode neighbourNode = new SearchNode(neighbour, searchNode.numOfMoved() + 1, searchNode);
-             minPQ.insert(neighbourNode);
-         }
+        Iterable<WorldState> neighbours = searchNode.worldState().neighbors();
+        for (WorldState neighs : neighbours) {
+            SearchNode grandParent = searchNode.getPreSearchNode();
+            if (grandParent != null && neighs.equals(grandParent.worldState())) {
+                continue;
+            }
+            SearchNode neiNode = new SearchNode(neighs, searchNode.numOfMoved() + 1, searchNode);
+            minPQ.insert(neiNode);
+        }
     }
 }

@@ -1,6 +1,6 @@
 package hw4.puzzle;
 
-public class SearchNode implements Comparable<SearchNode>{
+public class SearchNode implements Comparable<SearchNode> {
     private final WorldState worldState;
     private final int numOfMoved;
     private final int totalDistance;
