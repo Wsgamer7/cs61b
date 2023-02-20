@@ -1,13 +1,12 @@
 package hw4.puzzle;
 
-import java.lang.module.FindException;
 import java.util.ArrayList;
 
-public class Board implements WorldState{
+public class Board implements WorldState {
     private final int[][] tiles;
     private final int size;
     private int[][] allIndexOfNum;
-    /* Constructs a board from an N-by-N array of tiles where tiles[i][j] = tile at row i, column j */
+    /* Constructs a board from an N-by-N array of tiles */
     public Board(int[][] tilesPassed) {
         this.tiles = copyOfTiles(tilesPassed);
         size = tiles[0].length;
@@ -49,7 +48,7 @@ public class Board implements WorldState{
     private int[] blankIndex() {
         return allIndexOfNum[0];
     }
-    private int[][] copyOfTiles(int[][] tilesPassed){
+    private int[][] copyOfTiles(int[][] tilesPassed) {
         int sizeOfTile = tilesPassed[0].length;
         int[][] copied = new int[sizeOfTile][sizeOfTile];
         for (int i = 0; i < sizeOfTile; i++) {
@@ -60,7 +59,7 @@ public class Board implements WorldState{
     private Board swap(int[] index1, int[] index2) {
         int[][] tilesCopied = copyOfTiles(tiles);
         int temp = tileAt(index1);
-        tilesCopied[index1[0]][index1[1]] =tileAt(index2);
+        tilesCopied[index1[0]][index1[1]] = tileAt(index2);
         tilesCopied[index2[0]][index2[1]] = temp;
         return new Board(tilesCopied);
     }
@@ -102,9 +101,14 @@ public class Board implements WorldState{
     }
     public int hamming() {
         int numOfDiff = 0;
-        for (int n = 1; n < size * size; n++) {
-            if (manhattanOf2Index(allIndexOfNum[n], numIndexOfGoal(n)) == 0) {
-                numOfDiff += 1;
+        for (int i = 0; i < size(); i++) {
+            for (int j = 0; j < size(); j++) {
+                if (i + j == 2 * size() - 2) {
+                    continue;
+                }
+                if (tileAt(i, j) != i * size + j + 1) {
+                    numOfDiff += 1;
+                }
             }
         }
         return numOfDiff;
@@ -116,7 +120,10 @@ public class Board implements WorldState{
         }
         return sumOfManhattan;
     }
-
+    @Override
+    public int hashCode() {
+        return java.util.Arrays.deepHashCode(tiles);
+    }
     @Override
     public boolean equals(Object obj) {
         if (obj.getClass() != this.getClass()) {
@@ -127,8 +134,8 @@ public class Board implements WorldState{
             return false;
         }
         for (int i = 0; i < size(); i++) {
-            for (int j = 0; j < size(); j ++) {
-                if (tileAt(i,j) != other.tileAt(i, j)) {
+            for (int j = 0; j < size(); j++) {
+                if (tileAt(i, j) != other.tileAt(i, j)) {
                     return false;
                 }
             }
@@ -144,7 +151,7 @@ public class Board implements WorldState{
         s.append(N + "\n");
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                s.append(String.format("%2d ", tileAt(i,j)));
+                s.append(String.format("%2d ", tileAt(i, j)));
             }
             s.append("\n");
         }
