@@ -1,4 +1,4 @@
-N = 8
+N = 20
 rseed = 4
 
 MazeType = SINGLE_GAP
