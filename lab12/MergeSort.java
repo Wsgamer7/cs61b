@@ -84,14 +84,17 @@ public class MergeSort {
         return allSorted;
     }
 
-    private static <Item extends Comparable> Queue<Item> cutQueueGetQ2(
-            Queue<Item> items) {
-        Queue<Item> q2 = new Queue<>();
-        int sizeOfQ2 = items.size() / 2;
-        for (int i = 0; i < sizeOfQ2; i++) {
-            q2.enqueue(items.dequeue());
+    private static <Item extends Comparable> void cutQueue(
+            Queue<Item> items, Queue<Item> q0, Queue<Item> q1) {
+        int idOfEnqueue = 0;
+        for (Item item : items) {
+            if (idOfEnqueue == 0) {
+                q0.enqueue(item);
+            } else {
+                q1.enqueue(item);
+            }
+            idOfEnqueue = 1 - idOfEnqueue;
         }
-        return q2;
     }
     /** Returns a Queue that contains the given items sorted from least to greatest. */
     public static <Item extends Comparable> Queue<Item> mergeSort(
@@ -100,9 +103,11 @@ public class MergeSort {
         if (items.size() < 2) {
             return items;
         }
-        Queue<Item> q2 = cutQueueGetQ2(items);
-        Queue<Item> q1Sorted = mergeSort(items);
-        q2 = mergeSort(q2);
-        return mergeSortedQueues(q1Sorted, q2);
+        Queue<Item> q0 = new Queue<>();
+        Queue<Item> q1 = new Queue<>();
+        cutQueue(items, q0, q1);
+        Queue<Item> q0Sorted = mergeSort(q0);
+        Queue<Item> q1Sorted = mergeSort(q1);
+        return mergeSortedQueues(q0Sorted, q1Sorted);
     }
 }
