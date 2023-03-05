@@ -1,6 +1,23 @@
 import edu.princeton.cs.algs4.Queue;
 
 public class MergeSort {
+    public static void main(String[] args) {
+        Queue<String> toSort = new Queue<>();
+        toSort.enqueue("Alice");
+        toSort.enqueue("Xma");
+        toSort.enqueue("Man");
+        toSort.enqueue("Ws");
+        Queue<String> toSortCopy = new Queue<>();
+        for (String str : toSort) {
+            toSortCopy.enqueue(str);
+        }
+
+        Queue<String> sorted = MergeSort.mergeSort(toSort);
+        System.out.println("sorted:");
+        System.out.println(sorted);
+        System.out.println("origin:");
+        System.out.println(toSortCopy);
+    }
     /**
      * Removes and returns the smallest item that is in q1 or q2.
      *
@@ -35,7 +52,13 @@ public class MergeSort {
     private static <Item extends Comparable> Queue<Queue<Item>>
             makeSingleItemQueues(Queue<Item> items) {
         // Your code here!
-        return null;
+        Queue<Queue<Item>> singleItemQueues = new Queue<>();
+        for (Item item : items) {
+            Queue<Item> singleQueue = new Queue<>();
+            singleQueue.enqueue(item);
+            singleItemQueues.enqueue(singleQueue);
+        }
+        return singleItemQueues;
     }
 
     /**
@@ -54,13 +77,32 @@ public class MergeSort {
     private static <Item extends Comparable> Queue<Item> mergeSortedQueues(
             Queue<Item> q1, Queue<Item> q2) {
         // Your code here!
-        return null;
+        Queue<Item> allSorted = new Queue<>();
+        while (!(q1.isEmpty() && q2.isEmpty())) {
+            allSorted.enqueue(getMin(q1, q2));
+        }
+        return allSorted;
     }
 
+    private static <Item extends Comparable> Queue<Item> cutQueueGetQ2(
+            Queue<Item> items) {
+        Queue<Item> q2 = new Queue<>();
+        int sizeOfQ2 = items.size() / 2;
+        for (int i = 0; i < sizeOfQ2; i++) {
+            q2.enqueue(items.dequeue());
+        }
+        return q2;
+    }
     /** Returns a Queue that contains the given items sorted from least to greatest. */
     public static <Item extends Comparable> Queue<Item> mergeSort(
             Queue<Item> items) {
         // Your code here!
-        return items;
+        if (items.size() < 2) {
+            return items;
+        }
+        Queue<Item> q2 = cutQueueGetQ2(items);
+        Queue<Item> q1Sorted = mergeSort(items);
+        q2 = mergeSort(q2);
+        return mergeSortedQueues(q1Sorted, q2);
     }
 }

@@ -1,6 +1,20 @@
 import edu.princeton.cs.algs4.Queue;
 
 public class QuickSort {
+    public static void main(String[] args) {
+        Queue<String> toSort = new Queue<>();
+        toSort.enqueue("Alice");
+        Queue<String> toSortCopy = new Queue<>();
+        for (String str : toSort) {
+            toSortCopy.enqueue(str);
+        }
+
+        Queue<String> sorted = QuickSort.quickSort(toSort);
+        System.out.println("sorted:");
+        System.out.println(sorted);
+        System.out.println("origin:");
+        System.out.println(toSortCopy);
+    }
     /**
      * Returns a new queue that contains the given queues catenated together.
      *
@@ -48,12 +62,37 @@ public class QuickSort {
             Queue<Item> unsorted, Item pivot,
             Queue<Item> less, Queue<Item> equal, Queue<Item> greater) {
         // Your code here!
+        for (Item item : unsorted) {
+            if (item.compareTo(pivot) == 0) {
+                equal.enqueue(item);
+            } else if (item.compareTo(pivot) < 0) {
+                less.enqueue(item);
+            } else {
+                greater.enqueue(item);
+            }
+        }
     }
 
     /** Returns a Queue that contains the given items sorted from least to greatest. */
     public static <Item extends Comparable> Queue<Item> quickSort(
             Queue<Item> items) {
         // Your code here!
-        return items;
+        if (items.size() < 2) {
+            return items;
+        }
+        Queue<Item> less = new Queue<>();
+        Queue<Item> equal = new Queue<>();
+        Queue<Item> greater = new Queue<>();
+        Item pivot = getRandomItem(items);
+        partition(items, pivot, less, equal, greater);
+        Queue<Item> lessSorted = quickSort(less);
+        Queue<Item> greaterSorted = quickSort(greater);
+        for (Item item : equal) {
+            lessSorted.enqueue(item);
+        }
+        for (Item item : greaterSorted) {
+            lessSorted.enqueue(item);
+        }
+        return lessSorted;
     }
 }
