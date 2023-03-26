@@ -17,7 +17,18 @@ public class RadixSort {
      */
     public static String[] sort(String[] asciis) {
         // TODO: Implement LSD Sort
-        return null;
+        //get the max length of Strings in asciis
+        int maxLength = 0;
+        for (String str : asciis) {
+            int strLength = str.length();
+            maxLength = strLength > maxLength ? strLength : maxLength;
+        }
+        // sort
+        String[] sorted = asciis;
+        for (int index = 0; index < maxLength; index++) {
+            sorted = sortHelperLSD(sorted, index);
+        }
+        return sorted;
     }
 
     /**
@@ -26,9 +37,57 @@ public class RadixSort {
      * @param asciis Input array of Strings
      * @param index The position to sort the Strings on.
      */
-    private static void sortHelperLSD(String[] asciis, int index) {
+    private static String[] sortHelperLSD(String[] asciis, int index) {
         // Optional LSD helper method for required LSD radix sort
-        return;
+        //get the min and max in index
+        char max = Character.MIN_VALUE;
+        char min = Character.MAX_VALUE;
+        char[] charsAtIndex = new char[asciis.length];
+        for (int i = 0; i < asciis.length; i++) {
+            String str = asciis[i];
+            char c = fetchChar(str, index);
+            charsAtIndex[i] = c;
+            max = max > c ? max : c;
+            min = min < c ? min : c;
+        }
+
+        //get count
+        int[] count = new int[transToId(max, min) + 1];
+        for (char c : charsAtIndex) {
+            int idC = transToId(c, min);
+            count[idC] += 1;
+        }
+
+        // get start
+        int[] start = new int[transToId(max, min) + 1];
+        int pos = 0;
+        for (int i = 0; i < start.length; i++) {
+            start[i] = pos;
+            pos += count[i];
+        }
+
+        //sort
+        String[] sorted = new String[asciis.length];
+        for (int i = 0; i < asciis.length; i++) {
+            int idInStart = transToId(charsAtIndex[i], min);
+            int posInSorted = start[idInStart];
+            sorted[posInSorted] = asciis[i];
+            start[idInStart] += 1;
+        }
+
+        return sorted;
+    }
+    private static int transToId(char c, char min) {
+        return c - min;
+    }
+    /* get the char at index */
+    private static char fetchChar(String str, int id) {
+        int lenStr = str.length();
+        if (id < lenStr){
+            return str.charAt(lenStr - 1 - id);
+        } else {
+            return Character.MIN_VALUE;
+        }
     }
 
     /**
