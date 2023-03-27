@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 /**
  * Class for doing Radix sort
  *
@@ -24,9 +26,9 @@ public class RadixSort {
             maxLength = strLength > maxLength ? strLength : maxLength;
         }
         // sort
-        String[] sorted = asciis;
+        String[] sorted = asciis.clone();
         for (int index = 0; index < maxLength; index++) {
-            sorted = sortHelperLSD(sorted, index);
+            sortHelperLSD(sorted, index);
         }
         return sorted;
     }
@@ -37,7 +39,7 @@ public class RadixSort {
      * @param asciis Input array of Strings
      * @param index The position to sort the Strings on.
      */
-    private static String[] sortHelperLSD(String[] asciis, int index) {
+    private static void sortHelperLSD(String[] asciis, int index) {
         // Optional LSD helper method for required LSD radix sort
         //get the min and max in index
         char max = Character.MIN_VALUE;
@@ -74,8 +76,7 @@ public class RadixSort {
             sorted[posInSorted] = asciis[i];
             start[idInStart] += 1;
         }
-
-        return sorted;
+        asciis = sorted;
     }
     private static int transToId(char c, char min) {
         return c - min;
@@ -83,7 +84,7 @@ public class RadixSort {
     /* get the char at index */
     private static char fetchChar(String str, int id) {
         int lenStr = str.length();
-        if (id < lenStr){
+        if (id < lenStr) {
             return str.charAt(lenStr - 1 - id);
         } else {
             return Character.MIN_VALUE;
@@ -102,6 +103,16 @@ public class RadixSort {
      **/
     private static void sortHelperMSD(String[] asciis, int start, int end, int index) {
         // Optional MSD helper method for optional MSD radix sort
-        return;
+        //get the max length of Strings in asciis
+        int maxLength = 0;
+        for (String str : asciis) {
+            int strLength = str.length();
+            maxLength = strLength > maxLength ? strLength : maxLength;
+        }
+        String[] subArr = Arrays.copyOfRange(asciis, start, end);
+        sortHelperLSD(subArr, maxLength - index);
+
+        //apply to asciis
+        System.arraycopy(subArr, 0, asciis, start, subArr.length);
     }
 }

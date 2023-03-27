@@ -77,7 +77,7 @@ public class CountingSort {
 
         //get count
         int[] count = new int[transToId(max, min) + 1];
-        for(int n : arr) {
+        for (int n : arr) {
             int idN = transToId(n, min);
             count[idN] += 1;
         }
