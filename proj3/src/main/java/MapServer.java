@@ -34,6 +34,7 @@ public class MapServer {
      * the root tile, as the images in the img/ folder are scraped.
      * Longitude == x-axis; latitude == y-axis.
      */
+    public static final int MAX_DEPTH = 7;
     public static final double ROOT_ULLAT = 37.892195547244356, ROOT_ULLON = -122.2998046875,
             ROOT_LRLAT = 37.82280243352756, ROOT_LRLON = -122.2119140625;
     /** Each tile is 256x256 pixels. */
