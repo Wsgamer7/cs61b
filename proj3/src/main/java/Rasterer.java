@@ -9,9 +9,9 @@ import java.util.Map;
  */
 public class Rasterer {
     private final double lonDPP0;
-    public Rasterer(){
+    public Rasterer() {
         // YOUR CODE HERE
-         this.lonDPP0 = lonDPP(MapServer.ROOT_ULLON, MapServer.ROOT_LRLON, MapServer.TILE_SIZE);
+        this.lonDPP0 = lonDPP(MapServer.ROOT_ULLON, MapServer.ROOT_LRLON, MapServer.TILE_SIZE);
     }
 
     /**
@@ -59,6 +59,7 @@ public class Rasterer {
 
         //get good depth
         int depth = bestDepth(ullon, lrlon, width);
+        results.put("depth", depth);
 
         //select what images we need
         int[] leftUpTile = whichTile(ullon, ullat, depth);
@@ -80,7 +81,7 @@ public class Rasterer {
     private static double inBounding(double x, double bound1, double bound2) {
         double min = Math.min(bound1, bound2);
         double max = Math.max(bound1, bound2);
-        if (x < min){
+        if (x < min) {
             return min;
         } else if (x > max) {
             return max;
