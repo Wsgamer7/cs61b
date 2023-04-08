@@ -45,16 +45,12 @@ public class Rasterer {
     public Map<String, Object> getMapRaster(Map<String, Double> params) {
         // System.out.println(params);
         Map<String, Object> results = new HashMap<>();
-        //extract args from param and check it
+        //extract args from param
         double ullon = params.get("ullon");
         double lrlon = params.get("lrlon");
         double ullat = params.get("ullat");
         double lrlat = params.get("lrlat");
         double width = params.get("w");
-        if (inMap(ullon, ullat) && inMap(lrlon, lrlat)) { // checkout
-            results.put("query_success", false);
-            return results;
-        }
         results.put("query_success", true);
 
         //get good depth
@@ -89,8 +85,8 @@ public class Rasterer {
         return x;
     }
     private int[] whichTile(double lon, double lat, int depth) {
-        lon = inBounding(lon, MapServer.ROOT_ULLON, MapServer.ROOT_LRLON);
-        lat = inBounding(lat, MapServer.ROOT_ULLAT, MapServer.ROOT_LRLON);
+        lon = inBounding(lon, MapServer.ROOT_ULLON, MapServer.ROOT_LRLON - deltaLonPerTile(depth) / 2);
+        lat = inBounding(lat, MapServer.ROOT_ULLAT, MapServer.ROOT_LRLAT - deltaLatPerTile(depth) / 2);
         int x = (int) Math.floor((lon - MapServer.ROOT_ULLON) / deltaLonPerTile(depth));
         int y = (int) Math.floor((lat - MapServer.ROOT_ULLAT) / deltaLatPerTile(depth));
         return new int[]{x, y};
@@ -100,8 +96,9 @@ public class Rasterer {
         double deltaLat = deltaLatPerTile(depth);
         double raster_ul_lon = MapServer.ROOT_ULLON + deltaLon * leftUpTile[0];
         double raster_ul_lat = MapServer.ROOT_ULLAT + deltaLat * leftUpTile[1];
-        double raster_lr_lon = MapServer.ROOT_LRLON + deltaLon * (rightLow[0] + 1);
-        double raster_lr_lat = MapServer.ROOT_LRLAT + deltaLat * (rightLow[1] + 1);
+        double raster_lr_lon = MapServer.ROOT_ULLON + deltaLon * (rightLow[0]+ 1);
+        //raster_lr_lon = inBounding(raster_lr_lon, MapServer.ROOT_ULLON, MapServer.ROOT_LRLON);
+        double raster_lr_lat = MapServer.ROOT_ULLAT + deltaLat * (rightLow[1] + 1);
         Map<String, Double> bounding = new HashMap<>();
         bounding.put("raster_ul_lon", raster_ul_lon);
         bounding.put("raster_ul_lat", raster_ul_lat);
@@ -114,13 +111,13 @@ public class Rasterer {
         // 0 stands for x-axis; 1 stands for y-axis
         int xNumGrid = rightLowTile[0] - leftUpTile[0] + 1;
         int yNumGrid = rightLowTile[1] - leftUpTile[1] + 1;
-        String[][] renderGrid = new String[xNumGrid][yNumGrid];
-        for (int x = leftUpTile[0]; x <= rightLowTile[0]; x++) {
-            for (int y = leftUpTile[1]; y <= rightLowTile[1]; y++) {
+        String[][] renderGrid = new String[yNumGrid][xNumGrid];
+        for (int y = leftUpTile[1]; y <= rightLowTile[1]; y++) {
+            for (int x = leftUpTile[0]; x <= rightLowTile[0]; x++) {
                 String fileName = "d" + depth + "_x" + x + "_y" + y + ".png";
                 int xRenderGrid = x - leftUpTile[0];
                 int yRenderGrid = y - leftUpTile[1];
-                renderGrid[xRenderGrid][yRenderGrid] = fileName;
+                renderGrid[yRenderGrid][xRenderGrid] = fileName;
             }
         }
         return renderGrid;
