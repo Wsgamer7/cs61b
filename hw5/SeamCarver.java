@@ -1,11 +1,19 @@
 import java.awt.Color;
+import java.util.HashMap;
+import java.util.Map;
+
 import edu.princeton.cs.algs4.Picture;
 
 public class SeamCarver {
     private Picture picture;
     private double[][] energyMatrix;
+    private int[][] fromMatrix;
+    private double[][] energyUntil;
     public SeamCarver(Picture picture) {
         this.picture = picture;
+        intiEnergyMatrix();
+    }
+    private void intiEnergyMatrix() {
         energyMatrix = new double[width()][height()];
         fillEnergyMatrix();
     }
@@ -65,8 +73,20 @@ public class SeamCarver {
         return Math.pow(redDiff, 2) + Math.pow(greenDiff, 2) + Math.pow(blueDiff, 2);
     }
     public int[] findHorizontalSeam() {
-        return null;
+        Picture transposed = transpose(picture);
+        SeamCarver seamCarverTrans = new SeamCarver(transposed);
+        return seamCarverTrans.findVerticalSeam();
     }// sequence of indices for horizontal seam
+    private Picture transpose(Picture source) {
+        Picture target = new Picture(source.height(), source.width());
+        for (int y = 0; y < target.height(); y++) {
+            for (int x = 0; x < target.width(); x++) {
+                Color pixel = source.get(y, x);
+                target.set(x, y, pixel);
+            }
+        }
+        return target;
+    }
     private void validatePoint(int x, int y) {
         if (x < 0 || x > width() - 1) {
             throw new IndexOutOfBoundsException("out of bounds in horizon");
@@ -76,12 +96,66 @@ public class SeamCarver {
         }
     }
     public int[] findVerticalSeam(){
-        return null;
+        fromMatrix = new int[width()][height()];
+        energyUntil = new double[width()][height()];
+        for (int y = 0; y < height(); y++) {
+            for (int x = 0; x < width(); x++) {
+                fromMatrix[x][y] = fillEnergiesVertUntil(x, y);
+            }
+        }
+        int xButton = 0;
+        double minTotalEnergies = Double.MAX_VALUE;
+        for (int x = 0; x < width(); x++) {
+            if (energyUntil[x][height() - 1] < minTotalEnergies) {
+                xButton = x;
+                minTotalEnergies = energyUntil[x][height() - 1];
+            }
+        }
+        int[] idsVerSeam = new int[height()];
+        idsVerSeam[height() - 1] = xButton;
+        for (int y = height() - 2; y >= 0; y--) {
+            idsVerSeam[y] = idsVerSeam[y + 1] + fromMatrix[idsVerSeam[y + 1]][y + 1];
+        }
+        return idsVerSeam;
     }// sequence of indices for vertical seam
+    /* return -1, 0, 1 if (x, y) from leftUp, up, RightUp respectively,
+    and fill the total energies until (x, y) in energyUntil.
+     */
+    private int fillEnergiesVertUntil(int x, int y) {
+        if (y == 0) {
+            energyUntil[x][y] = energy(x, y);
+            return 0;
+        }
+        //get three total energies at head
+        Map<Integer, Double> fromEnergies = new HashMap<>();
+        fromEnergies.put(0, energyUntil[x][y - 1]);
+        if (x == 0) {
+            fromEnergies.put(1, energyUntil[x + 1][y - 1]);
+        } else if (x == width() - 1) {
+            fromEnergies.put(-1, energyUntil[x - 1][y - 1]);
+        } else {
+            fromEnergies.put(-1, energyUntil[x - 1][y - 1]);
+            fromEnergies.put(1, energyUntil[x + 1][y - 1]);
+        }
+        //find the minimum total energies
+        int minFrom = 0;
+        double minEnergies = fromEnergies.get(0);
+        for (int from : fromEnergies.keySet()) {
+            if (minEnergies > fromEnergies.get(from)) {
+                minFrom = from;
+                minEnergies = fromEnergies.get(from);
+            }
+        }
+        //fill in energyUntil
+        energyUntil[x][y] = energy(x, y) + minEnergies;
+        return minFrom;
+    }
     public void removeHorizontalSeam(int[] seam){
-        return;
+        picture = SeamRemover.removeHorizontalSeam(picture, seam);
+        intiEnergyMatrix();
     }// remove horizontal seam from picture
     public void removeVerticalSeam(int[] seam){
-        return;
+        picture = SeamRemover.removeVerticalSeam(picture, seam);
+        intiEnergyMatrix();
     }// remove vertical seam from picture
 }
