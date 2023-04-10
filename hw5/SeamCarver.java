@@ -10,7 +10,7 @@ public class SeamCarver {
     private int[][] fromMatrix;
     private double[][] energyUntil;
     public SeamCarver(Picture picture) {
-        this.picture = picture;
+        this.picture = new Picture(picture);
         intiEnergyMatrix();
     }
     private void intiEnergyMatrix() {
@@ -27,6 +27,7 @@ public class SeamCarver {
         return picture.height();
     } // height of current picture
     public double energy(int x, int y) {
+        validatePoint(x, y);
         return energyMatrix[x][y];
     }// energy of pixel at column x and row y
     private void fillEnergyMatrix() {
@@ -129,6 +130,10 @@ public class SeamCarver {
         //get three total energies at head
         Map<Integer, Double> fromEnergies = new HashMap<>();
         fromEnergies.put(0, energyUntil[x][y - 1]);
+        if (picture.width() == 1) {
+            energyUntil[x][y] = energy(x, y) + energyUntil[x][y - 1];
+            return 0;
+        }
         if (x == 0) {
             fromEnergies.put(1, energyUntil[x + 1][y - 1]);
         } else if (x == width() - 1) {
