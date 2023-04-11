@@ -18,7 +18,7 @@ public class SeamCarver {
         fillEnergyMatrix();
     }
     public Picture picture() {
-        return picture;
+        return new Picture(picture);
     } // current picture
     public int width() {
         return picture.width();
@@ -33,9 +33,12 @@ public class SeamCarver {
     private void fillEnergyMatrix() {
         for (int x = 0; x < width(); x++) {
             for (int y = 0; y < height(); y++) {
-                energyMatrix[x][y] = deltaXSquare(x, y) + deltaYSquare(x, y);
+                energyMatrix[x][y] = difference(x , y);
             }
         }
+    }
+    private double difference(int x, int y) {
+        return deltaXSquare(x, y) + deltaYSquare(x, y);
     }
     private double deltaXSquare(int x, int y) {
         validatePoint(x, y);
@@ -156,11 +159,53 @@ public class SeamCarver {
         return minFrom;
     }
     public void removeHorizontalSeam(int[] seam){
+        if (seam.length != width()) {
+            throw new IllegalArgumentException("bad seam length");
+        }
         picture = SeamRemover.removeHorizontalSeam(picture, seam);
-        intiEnergyMatrix();
+        fillEnergiesAfterRmHor(seam);
     }// remove horizontal seam from picture
     public void removeVerticalSeam(int[] seam){
+        if (seam.length != height()) {
+            throw new IllegalArgumentException("bad seam length");
+        }
         picture = SeamRemover.removeVerticalSeam(picture, seam);
-        intiEnergyMatrix();
+        fillEnergiesAfterRmVert(seam);
     }// remove vertical seam from picture
+    private void fillEnergiesAfterRmVert(int[] seam) {
+        int nWidth = width();
+        int nHeight = height();
+        double[][] nEnergiesMatrix = new double[nWidth][nHeight];
+        for(int y = 0; y < nHeight; y++) {
+            int seamY = seam[y];
+            for (int x = 0; x < nWidth; x++) {
+                if (x < seamY - 1) {
+                    nEnergiesMatrix[x][y] = energyMatrix[x][y];
+                } else if (x <= seamY) {
+                    nEnergiesMatrix[x][y] = difference(x, y);
+                } else {
+                    nEnergiesMatrix[x][y] = energyMatrix[x + 1][y];
+                }
+            }
+        }
+        energyMatrix = nEnergiesMatrix;
+    }
+    private void fillEnergiesAfterRmHor(int[] seam) {
+        int nWidth = width();
+        int nHeight = height();
+        double[][] nEnergiesMatrix = new double[nWidth][nHeight];
+        for (int x = 0; x < nWidth; x++) {
+            int seamX = seam[x];
+            for(int y = 0; y < nHeight; y++) {
+                if (y < seamX - 1) {
+                    nEnergiesMatrix[x][y] = energyMatrix[x][y];
+                } else if (y <= seamX) {
+                    nEnergiesMatrix[x][y] = difference(x, y);
+                } else {
+                    nEnergiesMatrix[x][y] = energyMatrix[x][y + 1];
+                }
+            }
+        }
+        energyMatrix = nEnergiesMatrix;
+    }
 }
