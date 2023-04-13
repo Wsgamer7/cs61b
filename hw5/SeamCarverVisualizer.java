@@ -101,22 +101,46 @@ public class SeamCarverVisualizer {
          frame.revalidate();
          frame.repaint();
     }
-
+    /*carver image by Proportional */
+    private static void caverToPro(double wDivH, SeamCarver sc) {
+        double sourceW = sc.width();
+        double sourceH = sc.height();
+        double targetW = sourceW;
+        double targetH = sourceH;
+        double wDivHSource = sourceW / sourceH;
+        if (wDivH < wDivHSource) {
+            targetW = sourceH * wDivH;
+        } else {
+            targetH = sourceW / wDivH;
+        }
+        int numRmHor = (int) Math.floor(sourceH - targetH);
+        int numRmVer = (int) Math.floor(sourceW - targetW);
+        SeamCarverVisualizer scv = new SeamCarverVisualizer();
+        scv.visualizeHorizontalCarve(sc, numRmHor);
+        scv.visualizeVerticalCarve(sc, numRmVer);
+    }
     public static void main(String[] args) {
-        if (args.length <= 1) {
-            System.out.println("Usage: SeamCarver [filename] [numPixels] [horizontal | yN]");
+//        if (args.length <= 1) {
+//            System.out.println("Usage: SeamCarver [filename] [numPixels] [horizontal | yN]");
+//            return;
+//        }
+        if (args.length <= 2) {
+            System.out.println("Usage: SeamCarver [filename] [widthProportional] [heightProportional]");
             return;
         }
-
         Picture samplePicture = new Picture(args[0]);
         SeamCarver sc = new SeamCarver(samplePicture);
-        int N = Integer.parseInt(args[1]);
-
-        SeamCarverVisualizer scv = new SeamCarverVisualizer();
-        if (args[2].equals("y")) {
-            scv.visualizeHorizontalCarve(sc, N);
-        } else {
-            scv.visualizeVerticalCarve(sc, N);
-        }
+        double proW = Double.parseDouble(args[1]);
+        double proH = Double.parseDouble(args[2]);
+        double wDivH = proW / proH;
+        caverToPro(wDivH, sc);
+//        int N = Integer.parseInt(args[1]);
+//
+//        SeamCarverVisualizer scv = new SeamCarverVisualizer();
+//        if (args[2].equals("y")) {
+//            scv.visualizeHorizontalCarve(sc, N);
+//        } else {
+//            scv.visualizeVerticalCarve(sc, N);
+//        }
     }
 }
