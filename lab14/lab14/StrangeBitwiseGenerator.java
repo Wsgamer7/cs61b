@@ -7,6 +7,12 @@ public class StrangeBitwiseGenerator implements Generator {
     protected int period;
     private int shift1;
     private int shift2;
+    public StrangeBitwiseGenerator(int period) {
+        this.period = period;
+        this.state = 0;
+        this.shift1 = 3;
+        this.shift2 = 5;
+    }
     public StrangeBitwiseGenerator(int period, int shift1, int shift2) {
         this.period = period;
         this.state = 0;
@@ -22,7 +28,7 @@ public class StrangeBitwiseGenerator implements Generator {
     /* converts values between 0 and period - 1 to values between -1.0 and 1.0.*/
     protected double normalize(int x) {
         double xFormat = ((double) x) / (period - 1);
-//        return 2 * xFormat - 1;
-        return Math.cos(xFormat * 2 * Math.PI);
+        return 2 * xFormat - 1;
+//        return Math.cos(xFormat * 2 * Math.PI);
     }
 }
