@@ -44,15 +44,19 @@ public class Boggle {
         }
         //read board
         readBoard(boardFilePath);
-        pQ = new PriorityQueue<>(k, new WordComparator());
+        pQ = new PriorityQueue<>(new WordComparator()); //TODO
         for (int y = 0; y < height(); y++) {
             for (int x = 0; x < width(); x++) {
                 solveStartIn(x, y);
             }
         }
         List<String> aimList = new ArrayList<>();
-        for (int i = 0; i < pQ.size(); i++){
-            aimList.add(pQ.remove());
+        while (aimList.size() < k && !pQ.isEmpty()) {
+            String toAdd = pQ.remove();
+            if (aimList.size() > 0 && aimList.get(aimList.size() - 1).equals(toAdd)) {
+                continue;
+            }
+            aimList.add(toAdd);
         }
         return aimList;
     }
@@ -136,7 +140,7 @@ public class Boggle {
             }
             if (obj == null) {
                 return false;
-            } else if (obj instanceof Cube) {
+            } else if (!(obj instanceof Cube)) {
                 return false;
             }
             Cube other = (Cube) obj;

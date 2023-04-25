@@ -19,7 +19,7 @@ public class testBoard {
     @Test
     public void testSolve() {
         Boggle boggle = new Boggle();
-        List<String> actual = boggle.solve(7, "exampleBoard.txt");
+        List<String> actual = boggle.solve(7, "smallBoard.txt");
         System.out.println(actual);
     }
 }
