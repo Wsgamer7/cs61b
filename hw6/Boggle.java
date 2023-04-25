@@ -44,7 +44,7 @@ public class Boggle {
         }
         //read board
         readBoard(boardFilePath);
-        pQ = new PriorityQueue<>(new WordComparator()); //TODO
+        pQ = new PriorityQueue<>(5 * k, new WordComparator());
         for (int y = 0; y < height(); y++) {
             for (int x = 0; x < width(); x++) {
                 solveStartIn(x, y);
@@ -85,11 +85,14 @@ public class Boggle {
     void readBoard(String boardFilePath) {
         List<char[]> boardList = new ArrayList<>();
         In in = new In(boardFilePath);
-        int width = - 1;
-        while(!in.isEmpty()) {
+        int width = -1;
+        while (!in.isEmpty()) {
             String line = in.readLine();
             int lineLength = line.length();
-            if (width == - 1) {
+            if (lineLength == 0) {
+                continue;
+            }
+            if (width == -1) {
                 width = lineLength;
             }
 
@@ -120,19 +123,13 @@ public class Boggle {
         int y;
         char letter;
         public Cube(int x, int y) {
-            if(!validate(x, y)) {
+            if (!validate(x, y)) {
                 throw new IllegalArgumentException("cube position is out of range");
             }
             this.x = x;
             this.y = y;
             letter = board[y][x];
         }
-//        @Override
-//        public int hashCode() {
-//            String strX = Integer.toString(x);
-//            String strY = Integer.toString(y);
-//            return Integer.parseInt(strX + strY);
-//        }
         @Override
         public boolean equals(Object obj) {
             if (obj == this) {
@@ -147,9 +144,8 @@ public class Boggle {
             return (x == other.x) && (y == other.y);
         }
         public List<Cube> adj(Node nowNode) {
-            //TODO
             List<Cube> adjReturn = new ArrayList<>();
-            for (int xDelta = - 1; xDelta <= 1; xDelta++) {
+            for (int xDelta = -1; xDelta <= 1; xDelta++) {
                 for (int yDelta = -1; yDelta <= 1; yDelta++) {
                     int adjX = x + xDelta;
                     int adjY = y + yDelta;
@@ -165,11 +161,11 @@ public class Boggle {
             }
             return adjReturn;
         }
-        private boolean validate(int x, int y) {
-            if (x < 0 || x >= width()) {
+        private boolean validate(int xPos, int yPos) {
+            if (xPos < 0 || xPos >= width()) {
                 return false;
             }
-            if (y < 0 || y >= height()) {
+            if (yPos < 0 || yPos >= height()) {
                 return false;
             }
             return true;
@@ -199,7 +195,7 @@ public class Boggle {
         boolean haveCube;
         Node preNode;
         Cube cube;
-        public Node () {
+        public Node() {
             exist = false;
             map = new HashMap<>();
             haveCube = false;

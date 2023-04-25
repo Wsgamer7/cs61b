@@ -3,7 +3,7 @@ import org.junit.Test;
 import java.util.List;
 
 import static org.junit.Assert.*;
-public class testBoard {
+public class TestBoard {
     @Test
     public void testRead() {
         Boggle boggle = new Boggle();
@@ -19,7 +19,7 @@ public class testBoard {
     @Test
     public void testSolve() {
         Boggle boggle = new Boggle();
-        List<String> actual = boggle.solve(7, "smallBoard.txt");
+        List<String> actual = boggle.solve(7, "board500.txt");
         System.out.println(actual);
     }
 }
