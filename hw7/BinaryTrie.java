@@ -9,6 +9,9 @@ public class BinaryTrie implements Serializable {
     public BinaryTrie(Map<Character, Integer> frequencyTable) {
         trie = buildTrie(frequencyTable);
     }
+    public int numberOfSymbols() {
+        return trie.freq;
+    }
     private static Node buildTrie(Map<Character, Integer> frequencyTable) {
         MinPQ<Node> pq = new MinPQ<>();
         for (char ch : frequencyTable.keySet()) {
@@ -64,7 +67,7 @@ public class BinaryTrie implements Serializable {
         lookupTableHelper(node.left, prefix.appended(0), lookupTable);
         lookupTableHelper(node.right, prefix.appended(1), lookupTable);
     }
-    private static class Node implements Comparable<Node> {
+    private static class Node implements Comparable<Node>, Serializable {
         private final char ch;
         private final int freq;
         private final Node left, right;

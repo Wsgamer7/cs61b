@@ -57,6 +57,13 @@ public class BitSequence implements Serializable {
         this.firstBitNum = 0;
         this.lastBitNum = bs.numBits;
     }
+    public void removeFirstN(int n) {
+        if (n > numBits) {
+            throw new IllegalArgumentException("More bits removed than the present in sequence");
+        }
+        numBits -= n;
+        firstBitNum += n;
+    }
 
     /** Number of bits in this sequence. */
     public int length() {
