@@ -34,7 +34,6 @@ public class BinaryTrie implements Serializable {
         char ch = '\0';
         for (int i = 0; i < querySequence.length(); i++) {
             int bit = querySequence.bitAt(i);
-            ch = pointer.ch;
             if (bit == 0) {
                 pointer = pointer.left;
             } else {
@@ -43,7 +42,8 @@ public class BinaryTrie implements Serializable {
             if (pointer == null) {
                 break;
             }
-            longestPrefix.appended(bit);
+            ch = pointer.ch;
+            longestPrefix = longestPrefix.appended(bit);
         }
         return new Match(longestPrefix, ch);
     }
