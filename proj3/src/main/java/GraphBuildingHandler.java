@@ -113,6 +113,8 @@ public class GraphBuildingHandler extends DefaultHandler {
                 /* TODO Figure out whether this way and its connections are valid. */
                 if (!ALLOWED_HIGHWAY_TYPES.contains(v)) {
                     validWay = false;
+                } else {
+                    validWay = true;
                 }
                 nowWay.highway = v;
                 /* Hint: Setting a "flag" is good enough! */

@@ -95,12 +95,20 @@ public class GraphDB {
      */
     private void clean() {
         // TODO: Your code here.
-        for (Long nodeId : nodeMap.keySet()) {
+        Set<Long> nodeIdSet = nodeIdSetCurrent();
+        for (Long nodeId : nodeIdSet){
             if (!adjMap.containsKey(nodeId)) {
                 nodeMap.remove(nodeId);
             }
         }
         //maybe need to remove nodeId in adjMap that is no exist in nodeList
+    }
+    private Set<Long> nodeIdSetCurrent() {
+        Set<Long> nodeIdSet = new HashSet<>();
+        for (long nodeId : vertices()) {
+            nodeIdSet.add(nodeId);
+        }
+        return nodeIdSet;
     }
 
     /**
