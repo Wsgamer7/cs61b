@@ -6,10 +6,7 @@ import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Graph for storing all of the intersection (vertex) and road (edge) information.
@@ -24,7 +21,7 @@ public class GraphDB {
     /** Your instance variables for storing the graph. You should consider
      * creating helper classes, e.g. Node, Edge, etc. */
     private Map<Long, Node> nodeMap;
-    private Map<Long, List<Long>> adjMap;
+    private Map<Long, Set<Long>> adjMap;
     private Map<Long, Way> wayMap;
 
     /**
@@ -50,7 +47,38 @@ public class GraphDB {
         }
         clean();
     }
+    public void addNode(Node node) {
+        nodeMap.put(node.nodeId, node);
+    }
+    public void addWay(Way way) {
+        wayMap.put(way.wayId, way);
 
+        // add wayId for node in the way
+        Set<Long> nodeInWay = way.adjMapWay.keySet();
+        for (long nodeId : nodeInWay) {
+            Node node = getNode(nodeId);
+            if (node == null) {
+                continue;
+            }
+            node.addWay(way.wayId);
+        }
+
+        //copy connection in the way to the graphDB
+        copyAdjFrom(way);
+    }
+    private void addListInAdjMap(long key, Set<Long> setAdded) {
+        if (adjMap.get(key) == null) {
+            adjMap.put(key, new HashSet<>());
+        }
+        adjMap.get(key).addAll(setAdded);
+    }
+    private void copyAdjFrom(Way way) {
+        Map<Long, Set<Long>> adjMapWay = way.adjMapWay;
+        for (long nodeId : adjMapWay.keySet()) {
+            Set<Long> setAdded = adjMapWay.get(nodeId);
+            addListInAdjMap(nodeId, setAdded);
+        }
+    }
     /**
      * Helper to process strings into their "cleaned" form, ignoring punctuation and capitalization.
      * @param s Input string.
@@ -67,7 +95,7 @@ public class GraphDB {
      */
     private void clean() {
         // TODO: Your code here.
-        for (Long nodeId : vertices()) {
+        for (Long nodeId : nodeMap.keySet()) {
             if (!adjMap.containsKey(nodeId)) {
                 nodeMap.remove(nodeId);
             }
@@ -86,7 +114,7 @@ public class GraphDB {
 
     /**
      * Returns ids of all vertices adjacent to v.
-     * @param v The id of the vertex we are looking adjacent to.
+     * @param nodeId The id of the vertex we are looking adjacent to.
      * @return An iterable of the ids of the neighbors of v.
      */
     Iterable<Long> adjacent(long nodeId) {
@@ -185,52 +213,41 @@ public class GraphDB {
     }
     static class Way {
         Long wayId;
-        private List<Long> nodeList;
-        private Map<String, String> tagMap;
+        String name;
+        String highway;
+        String maxspeed;
+        long lastNode = 0;
+        Map<Long, Set<Long>> adjMapWay;
         public Way (Long wayId) {
             this.wayId = wayId;
+            adjMapWay = new HashMap<>();
         }
-        public void addNode(Long nodeId) {
-            if (nodeList == null) {
-                nodeList = new ArrayList<>();
+        public void addNode(long nodeId) {
+            if (lastNode == 0)  {
+                lastNode = nodeId;
+                return;
             }
-            nodeList.add(nodeId);
+            connect2Node(lastNode, nodeId);
+            lastNode = nodeId;
         }
-        /* connect all node in nodeList, use it after adding the way to graphDB.waySet */
-        public void connectNodeList(Map<Long, List<Long>> adjMap) {
-            for (int i = 0; i < nodeList.size() - 1; i++) {
-                Long node0 = nodeList.get(i);
-                Long node1 = nodeList.get(i + 1);
-                connect2Nodes(node0, node1, adjMap);
+        private void connect2Node(long node0, long node1) {
+            if (adjMapWay.get(node0) == null) {
+                adjMapWay.put(node0, new HashSet<>());
             }
-        }
-        private static void connect2Nodes(Long node0, Long node1,
-                                   Map<Long, List<Long>> adjMap) {
-            if (adjMap == null) {
-                adjMap = new HashMap<>();
-            } else if (adjMap.get(node0) == null) {
-                adjMap.put(node0, new ArrayList<>());
-            } else if (adjMap.get(node1) == null) {
-                adjMap.put(node1, new ArrayList<>());
+            if (adjMapWay.get(node1) == null) {
+                adjMapWay.put(node1, new HashSet<>());
             }
-            adjMap.get(node0).add(node1);
-            adjMap.get(node1).add(node0);
-        }
-
-        public void addTag(String key, String value) {
-            if (tagMap == null) {
-                tagMap = new HashMap<>();
-            }
-            tagMap.put(key, value);
+            adjMapWay.get(node0).add(node1);
+            adjMapWay.get(node1).add(node0);
         }
     }
     static class Node {
-        Long nodeId;
-        Long lat;
-        Long lon;
+        long nodeId;
+        double lat;
+        double lon;
         String name;
         private List<Long> wayList;
-        public Node (Long nodeId, Long lat, Long lon) {
+        public Node (Long nodeId, double lat, double lon) {
             this.nodeId = nodeId;
             this.lat = lat;
             this.lon = lon;
@@ -239,6 +256,9 @@ public class GraphDB {
             this.name = name;
         }
         public void addWay(Long wayId) {
+            if (wayList == null) {
+                wayList = new ArrayList<>();
+            }
             wayList.add(wayId);
         }
         public List<Long> getWayList() {
