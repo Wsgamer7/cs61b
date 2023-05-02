@@ -70,6 +70,8 @@ public class GraphDB {
             long node1 = nodeListInWay.get(i + 1);
             connect2Node(node0, node1);
         }
+        // uncommit to save memory
+//        nodeListInWay = null;
     }
     private void connect2Node(long node0, long node1) {
         if (adjMap.get(node0) == null) {
