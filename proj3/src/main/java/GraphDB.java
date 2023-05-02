@@ -51,11 +51,12 @@ public class GraphDB {
         nodeMap.put(node.nodeId, node);
     }
     public void addWay(Way way) {
-        wayMap.put(way.wayId, way);
+        List<Long> nodeListInWay = way.nodeList;
+        long wayId = way.wayId;
+        wayMap.put(wayId, way);
 
         // add wayId for node in the way
-        Set<Long> nodeInWay = way.adjMapWay.keySet();
-        for (long nodeId : nodeInWay) {
+        for (long nodeId : nodeListInWay) {
             Node node = getNode(nodeId);
             if (node == null) {
                 continue;
@@ -64,20 +65,21 @@ public class GraphDB {
         }
 
         //copy connection in the way to the graphDB
-        copyAdjFrom(way);
-    }
-    private void addListInAdjMap(long key, Set<Long> setAdded) {
-        if (adjMap.get(key) == null) {
-            adjMap.put(key, new HashSet<>());
+        for (int i = 0; i < nodeListInWay.size() - 1; i++) {
+            long node0 = nodeListInWay.get(i);
+            long node1 = nodeListInWay.get(i + 1);
+            connect2Node(node0, node1);
         }
-        adjMap.get(key).addAll(setAdded);
     }
-    private void copyAdjFrom(Way way) {
-        Map<Long, Set<Long>> adjMapWay = way.adjMapWay;
-        for (long nodeId : adjMapWay.keySet()) {
-            Set<Long> setAdded = adjMapWay.get(nodeId);
-            addListInAdjMap(nodeId, setAdded);
+    private void connect2Node(long node0, long node1) {
+        if (adjMap.get(node0) == null) {
+            adjMap.put(node0, new HashSet<>());
         }
+        if (adjMap.get(node1) == null) {
+            adjMap.put(node1, new HashSet<>());
+        }
+        adjMap.get(node0).add(node1);
+        adjMap.get(node1).add(node0);
     }
     /**
      * Helper to process strings into their "cleaned" form, ignoring punctuation and capitalization.
@@ -224,32 +226,12 @@ public class GraphDB {
         String name;
         String highway;
         String maxspeed;
-        long lastNode = 0;
-        Map<Long, Set<Long>> adjMapWay;
+        List<Long> nodeList = new ArrayList<>();
         public Way (Long wayId) {
             this.wayId = wayId;
-            adjMapWay = new HashMap<>();
         }
-        public void addNode(long nodeId, Set<Long> validNodes) {
-            if (!validNodes.contains(nodeId)) {
-                return;
-            }
-            if (lastNode == 0)  {
-                lastNode = nodeId;
-                return;
-            }
-            connect2Node(lastNode, nodeId);
-            lastNode = nodeId;
-        }
-        private void connect2Node(long node0, long node1) {
-            if (adjMapWay.get(node0) == null) {
-                adjMapWay.put(node0, new HashSet<>());
-            }
-            if (adjMapWay.get(node1) == null) {
-                adjMapWay.put(node1, new HashSet<>());
-            }
-            adjMapWay.get(node0).add(node1);
-            adjMapWay.get(node1).add(node0);
+        public void addNode(Long nodeId) {
+            nodeList.add(nodeId);
         }
     }
     static class Node {

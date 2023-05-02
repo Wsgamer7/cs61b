@@ -93,7 +93,7 @@ public class GraphBuildingHandler extends DefaultHandler {
             /* While looking at a way, we found a <nd...> tag. */
             //System.out.println("Id of a node in this way: " + attributes.getValue("ref"));
             long ref = Long.parseLong(attributes.getValue("ref"));
-            nowWay.addNode(ref, g.nodeIdSetCurrent());
+            nowWay.addNode(ref);
             /* TODO Use the above id to make "possible" connections between the nodes in this way */
             /* Hint1: It would be useful to remember what was the last node in this way. */
             /* Hint2: Not all ways are valid. So, directly connecting the nodes here would be
