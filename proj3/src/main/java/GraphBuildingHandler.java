@@ -85,6 +85,7 @@ public class GraphBuildingHandler extends DefaultHandler {
         } else if (qName.equals("way")) {
             /* We encountered a new <way...> tag. */
             activeState = "way";
+            validWay = false;
             long wayId = Long.parseLong(attributes.getValue("id"));
             nowWay = new GraphDB.Way(wayId);
 //            System.out.println("Beginning a way...");
@@ -92,7 +93,7 @@ public class GraphBuildingHandler extends DefaultHandler {
             /* While looking at a way, we found a <nd...> tag. */
             //System.out.println("Id of a node in this way: " + attributes.getValue("ref"));
             long ref = Long.parseLong(attributes.getValue("ref"));
-            nowWay.addNode(ref);
+            nowWay.addNode(ref, g.nodeIdSetCurrent());
             /* TODO Use the above id to make "possible" connections between the nodes in this way */
             /* Hint1: It would be useful to remember what was the last node in this way. */
             /* Hint2: Not all ways are valid. So, directly connecting the nodes here would be
@@ -111,11 +112,7 @@ public class GraphBuildingHandler extends DefaultHandler {
             } else if (k.equals("highway")) {
                 //System.out.println("Highway type: " + v);
                 /* TODO Figure out whether this way and its connections are valid. */
-                if (!ALLOWED_HIGHWAY_TYPES.contains(v)) {
-                    validWay = false;
-                } else {
-                    validWay = true;
-                }
+                validWay = ALLOWED_HIGHWAY_TYPES.contains(v);
                 nowWay.highway = v;
                 /* Hint: Setting a "flag" is good enough! */
             } else if (k.equals("name")) {

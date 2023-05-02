@@ -97,13 +97,13 @@ public class GraphDB {
         // TODO: Your code here.
         Set<Long> nodeIdSet = nodeIdSetCurrent();
         for (Long nodeId : nodeIdSet){
-            if (!adjMap.containsKey(nodeId)) {
+            if (adjacent(nodeId) == null) {
                 nodeMap.remove(nodeId);
             }
         }
         //maybe need to remove nodeId in adjMap that is no exist in nodeList
     }
-    private Set<Long> nodeIdSetCurrent() {
+     Set<Long> nodeIdSetCurrent() {
         Set<Long> nodeIdSet = new HashSet<>();
         for (long nodeId : vertices()) {
             nodeIdSet.add(nodeId);
@@ -230,7 +230,10 @@ public class GraphDB {
             this.wayId = wayId;
             adjMapWay = new HashMap<>();
         }
-        public void addNode(long nodeId) {
+        public void addNode(long nodeId, Set<Long> validNodes) {
+            if (!validNodes.contains(nodeId)) {
+                return;
+            }
             if (lastNode == 0)  {
                 lastNode = nodeId;
                 return;

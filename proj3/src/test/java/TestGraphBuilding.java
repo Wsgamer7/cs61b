@@ -30,7 +30,7 @@ public class TestGraphBuilding {
         if (initialized) {
             return;
         }
-//        graph = new GraphDB(OSM_DB_PATH);
+        graph = new GraphDB(OSM_DB_PATH);
         graphSmall = new GraphDB(OSM_DB_PATH_SMALL);
         initialized = true;
     }
