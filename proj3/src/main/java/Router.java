@@ -85,8 +85,8 @@ public class Router {
             double node1ToSource = disToSource.get(node1);
 
             // uncommit the below line to use Dijkstra's, default using A*
-            double diff = node0ToSource - node1ToSource;
-//            double diff = node0ToSource + h(node0) - node1ToSource - h(node1);
+//            double diff = node0ToSource - node1ToSource;
+            double diff = node0ToSource + h(node0) - node1ToSource - h(node1);
             if (diff < 0) {
                 return -1;
             } else if (diff == 0) {
