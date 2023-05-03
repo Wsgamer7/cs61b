@@ -4,12 +4,7 @@ import java.awt.BasicStroke;
 import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.util.Base64;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.io.IOException;
@@ -255,7 +250,6 @@ public class MapServer {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     private static BufferedImage getImage(String imgPath) {
@@ -286,7 +280,7 @@ public class MapServer {
      * cleaned <code>prefix</code>.
      */
     public static List<String> getLocationsByPrefix(String prefix) {
-        return new LinkedList<>();
+        return graph.trieSet.getStringsByPrefix(prefix);
     }
 
     /**
@@ -302,7 +296,28 @@ public class MapServer {
      * "id" : Number, The id of the node. <br>
      */
     public static List<Map<String, Object>> getLocations(String locationName) {
-        return new LinkedList<>();
+//        List<String> matchNames = getLocationsByPrefix(locationName);
+        List<Map<String, Object>> mapList = new ArrayList<>();
+//        for (String matchName : matchNames) {
+            getLocationsAMatch(locationName, mapList);
+//        }
+        return mapList;
+    }
+    private static void getLocationsAMatch(String matchName, List<Map<String, Object>> mapList) {
+        Set<Long> nodeIdSet = graph.getNodeIdSetBy(matchName);
+        if (nodeIdSet == null) {
+            return;
+        }
+        for (long nodeId : nodeIdSet) {
+            Map<String, Object> infoMap = new HashMap<>();
+            double lat = graph.lat(nodeId);
+            double lon = graph.lon(nodeId);
+            infoMap.put("lat", lat);
+            infoMap.put("lon", lon);
+            infoMap.put("name", matchName);
+            infoMap.put("id", nodeId);
+        }
+
     }
 
     /**

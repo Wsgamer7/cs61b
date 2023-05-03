@@ -1,5 +1,4 @@
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,7 +24,80 @@ public class Router {
      */
     public static List<Long> shortestPath(GraphDB g, double stlon, double stlat,
                                           double destlon, double destlat) {
-        return null; // FIXME
+        // prepare
+        Map<Long, Double> disToSource = new HashMap<>();
+        Map<Long, Long> edgeTo = new HashMap<>();
+        long source = g.closest(stlon, stlat);
+        long goal = g.closest(destlon, destlat);
+        AStarComparator aStarComparator = new AStarComparator(disToSource, g, goal);
+        PriorityQueue<Long> fringe = new PriorityQueue<>(aStarComparator);
+
+        //init fringe
+        disToSource.put(source, (double) 0);
+        edgeTo.put(source, (long) 0);
+        fringe.add(source);
+
+        // finding
+        while (!fringe.isEmpty()) {
+            long v = fringe.remove();
+            // condition to finish finding
+            if (v == goal) {
+                break;
+            }
+            for (long w : g.adjacent(v)) {
+                // relax w
+                double nowWtoSource = disToSource.get(v) + g.distance(w, v);
+                if (disToSource.containsKey(w)) {
+                    double preWToSource = disToSource.get(w);
+                    if (nowWtoSource >= preWToSource) {
+                        continue;
+                    }
+                }
+                disToSource.put(w, nowWtoSource);
+                edgeTo.put(w, v);
+                fringe.add(w);
+            }
+        }
+
+        // generate path list
+        List<Long> pathFound = new ArrayList<>();
+        long pointer = goal;
+        while (pointer != 0) {
+            pathFound.add(0, pointer);
+            pointer = edgeTo.get(pointer);
+        }
+        return pathFound;
+    }
+    private static class AStarComparator implements Comparator<Long> {
+
+        private final Map<Long, Double> disToSource;
+        private final GraphDB g;
+        private final long goal;
+        public AStarComparator(Map<Long, Double> disToSource,
+                               GraphDB g, long goal) {
+            this.disToSource = disToSource;
+            this.g = g;
+            this.goal = goal;
+        }
+        @Override
+        public int compare(Long node0, Long node1) {
+            double node0ToSource = disToSource.get(node0);
+            double node1ToSource = disToSource.get(node1);
+
+            // uncommit the below line to use Dijkstra's, default using A*
+//            double diff = node0ToSource - node1ToSource;
+            double diff = node0ToSource + h(node0) - node1ToSource - h(node1);
+            if (diff < 0) {
+                return -1;
+            } else if (diff == 0) {
+                return 0;
+            } else {
+                return 1;
+            }
+        }
+        private double h(long nodeId) {
+            return g.distance(nodeId, goal);
+        }
     }
 
     /**
@@ -37,7 +109,54 @@ public class Router {
      * route.
      */
     public static List<NavigationDirection> routeDirections(GraphDB g, List<Long> route) {
-        return null; // FIXME
+        List<NavigationDirection> navigationDirections = new ArrayList<>();
+        if (route.isEmpty()) {
+            return navigationDirections;
+        }
+        long node0 = route.get(0);
+        long node1 = route.get(1);
+        long wayId = g.getWayCurNode(node0, node1);
+        String wayName = g.getWayName(wayId);
+        NavigationDirection navi = new NavigationDirection(0, wayName);
+        navi.distance += g.distance(node0, node1);
+        navigationDirections.add(navi);
+
+        for (int i = 1; i < route.size() - 1; i++) {
+            long nodeL = route.get(i);
+            long nodeR = route.get(i + 1);
+            long curWayId = g.getWayCurNode(nodeL, nodeR);
+            String curWayName = g.getWayName(curWayId);
+            double disLR = g.distance(nodeL, nodeR);
+
+            if (curWayName.equals(wayName)) {
+                navi.distance += disLR;
+            } else {
+                int direction = getDirection(nodeL, nodeR, g);
+                wayName = curWayName;
+                navi = new NavigationDirection(direction, wayName);
+                navi.distance += disLR;
+                navigationDirections.add(navi);
+            }
+        }
+        return navigationDirections;
+    }
+    private static int getDirection(long preNode, long curNode, GraphDB g) {
+        double bear = g.bearing(preNode, curNode);
+        double absBear = Math.abs(bear);
+        int isRight = 0;
+        if (bear > 0) {
+            isRight = 1;
+        }
+
+        if (absBear <= 15) {
+            return 1;
+        } else if (absBear <= 30) {
+            return 2 + isRight;
+        } else if (absBear <= 100) {
+            return 4 + isRight;
+        } else {
+            return 6 + isRight;
+        }
     }
 
 
@@ -92,6 +211,11 @@ public class Router {
             this.direction = STRAIGHT;
             this.way = UNKNOWN_ROAD;
             this.distance = 0.0;
+        }
+        public NavigationDirection(int direction, String wayName) {
+            this.direction = direction;
+            this.way = wayName;
+            this.distance = 0;
         }
 
         public String toString() {
