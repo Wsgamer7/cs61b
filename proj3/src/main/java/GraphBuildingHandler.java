@@ -124,7 +124,9 @@ public class GraphBuildingHandler extends DefaultHandler {
                 .equals("name")) {
             /* While looking at a node, we found a <tag...> with k="name". */
             /* TODO Create a location. */
-            nowNode.addName(attributes.getValue("v"));
+            String name = attributes.getValue("v");
+            g.trieSet.add(name);
+            g.addNodeIdForName(name, nowNode.nodeId);
             /* Hint: Since we found this <tag...> INSIDE a node, we should probably remember which
             node this tag belongs to. Remember XML is parsed top-to-bottom, so probably it's the
             last node that you looked at (check the first if-case). */

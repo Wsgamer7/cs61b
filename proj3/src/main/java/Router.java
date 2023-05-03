@@ -70,9 +70,9 @@ public class Router {
     }
     private static class AStarComparator implements Comparator<Long> {
 
-        private Map<Long, Double> disToSource;
-        private GraphDB g;
-        private long goal;
+        private final Map<Long, Double> disToSource;
+        private final GraphDB g;
+        private final long goal;
         public AStarComparator(Map<Long, Double> disToSource,
                                GraphDB g, long goal) {
             this.disToSource = disToSource;
@@ -109,7 +109,54 @@ public class Router {
      * route.
      */
     public static List<NavigationDirection> routeDirections(GraphDB g, List<Long> route) {
-        return null; // FIXME
+        List<NavigationDirection> navigationDirections = new ArrayList<>();
+        if (route.isEmpty()) {
+            return navigationDirections;
+        }
+        long node0 = route.get(0);
+        long node1 = route.get(1);
+        long wayId = g.getWayCurNode(node0, node1);
+        String wayName = g.getWayName(wayId);
+        NavigationDirection navi = new NavigationDirection(0, wayName);
+        navi.distance += g.distance(node0, node1);
+        navigationDirections.add(navi);
+
+        for (int i = 1; i < route.size() - 1; i++) {
+            long nodeL = route.get(i);
+            long nodeR = route.get(i + 1);
+            long curWayId = g.getWayCurNode(nodeL, nodeR);
+            String curWayName = g.getWayName(curWayId);
+            double disLR = g.distance(nodeL, nodeR);
+
+            if (curWayName.equals(wayName)) {
+                navi.distance += disLR;
+            } else {
+                int direction = getDirection(nodeL, nodeR, g);
+                wayName = curWayName;
+                navi = new NavigationDirection(direction, wayName);
+                navi.distance += disLR;
+                navigationDirections.add(navi);
+            }
+        }
+        return navigationDirections;
+    }
+    private static int getDirection(long preNode, long curNode, GraphDB g) {
+        double bear = g.bearing(preNode, curNode);
+        double absBear = Math.abs(bear);
+        int isRight = 0;
+        if (bear > 0) {
+            isRight = 1;
+        }
+
+        if (absBear <= 15) {
+            return 1;
+        } else if (absBear <= 30) {
+            return 2 + isRight;
+        } else if (absBear <= 100) {
+            return 4 + isRight;
+        } else {
+            return 6 + isRight;
+        }
     }
 
 
@@ -164,6 +211,11 @@ public class Router {
             this.direction = STRAIGHT;
             this.way = UNKNOWN_ROAD;
             this.distance = 0.0;
+        }
+        public NavigationDirection(int direction, String wayName) {
+            this.direction = direction;
+            this.way = wayName;
+            this.distance = 0;
         }
 
         public String toString() {

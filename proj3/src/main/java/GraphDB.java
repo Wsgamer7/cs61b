@@ -20,9 +20,11 @@ import java.util.*;
 public class GraphDB {
     /** Your instance variables for storing the graph. You should consider
      * creating helper classes, e.g. Node, Edge, etc. */
-    private Map<Long, Node> nodeMap;
-    private Map<Long, Set<Long>> adjMap;
-    private Map<Long, Way> wayMap;
+    private static Map<Long, Node> nodeMap;
+    private static Map<Long, Set<Long>> adjMap;
+    private static Map<Long, Way> wayMap;
+    TrieSet trieSet = new TrieSet();
+    Map<String, Set<Long>> nameToNodeIds = new HashMap<>();
 
     /**
      * Example constructor shows how to create and start an XML parser.
@@ -49,6 +51,16 @@ public class GraphDB {
     }
     public void addNode(Node node) {
         nodeMap.put(node.nodeId, node);
+    }
+    public void addNodeIdForName(String name, long nodeId) {
+        if (!nameToNodeIds.containsKey(name)) {
+            nameToNodeIds.put(name, new HashSet<>());
+        }
+        Set<Long> nodeIdSet = nameToNodeIds.get(name);
+        nodeIdSet.add(nodeId);
+    }
+    public Set<Long> getNodeIdSetBy(String name) {
+        return nameToNodeIds.get(name);
     }
     public void addWay(Way way) {
         List<Long> nodeListInWay = way.nodeList;
@@ -184,6 +196,23 @@ public class GraphDB {
         return Math.toDegrees(Math.atan2(y, x));
     }
 
+    public long getWayCurNode(long preNodeId, long curNodeId) {
+        List<Long> preWayList = nodeMap.get(preNodeId).wayList;
+        List<Long> curWayList = nodeMap.get(curNodeId).wayList;
+        for (long preWayId : preWayList) {
+            for (long curWayId : curWayList) {
+                if (preWayId == curWayId) {
+                    return curWayId;
+                }
+            }
+        }
+        return curWayList.get(0);
+    }
+
+    public String getWayName(long wayId) {
+        Way way = wayMap.get(wayId);
+        return way.getName();
+    }
     /**
      * Returns the vertex closest to the given longitude and latitude.
      * @param lon The target longitude.
@@ -235,20 +264,22 @@ public class GraphDB {
         public void addNode(Long nodeId) {
             nodeList.add(nodeId);
         }
+        public String getName() {
+            if (name == null) {
+                return "unknown road";
+            }
+            return name;
+        }
     }
     static class Node {
         long nodeId;
         double lat;
         double lon;
-        String name;
         private List<Long> wayList;
         public Node (Long nodeId, double lat, double lon) {
             this.nodeId = nodeId;
             this.lat = lat;
             this.lon = lon;
-        }
-        public void addName(String name) {
-            this.name = name;
         }
         public void addWay(Long wayId) {
             if (wayList == null) {
